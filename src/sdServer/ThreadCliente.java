@@ -5,68 +5,61 @@
  */
 package sdServer;
 
-import java.io.DataInputStream;
+import com.sun.security.ntlm.Server;
 import java.io.DataOutputStream;
-import java.io.FileInputStream;
 import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.net.Socket;
 
 /**
  *
  * @author thi_s
  */
-public class ThreadCliente extends Thread{
-     private Socket cliente;
+public class ThreadCliente extends Thread {
 
-  public ThreadCliente(Socket cliente) {
-    this.cliente = cliente;
-  }
+    private String connection_info;
+    private Socket connection;
+    private SDServer server;
+    private boolean running;
 
-  public void run() {
-    try {
-          String msgReceive = "";
-            //ObjectInputStream para receber o nome do arquivo
-          //Recebe o nome do arquivo
-          ObjectInputStream   entrada = null;
-          DataOutputStream saida = null;
-          while(! msgReceive.equals("sair")){
-          entrada = new ObjectInputStream(cliente.getInputStream());
-          saida  = new DataOutputStream(cliente.getOutputStream());
-          msgReceive = (String)entrada.readObject();
-          //Buffer de leitura dos bytes do arquivo
-          //byte buffer[] = new byte[512];
-          //Leitura do arquivo solicitado
-          //FileInputStream file = new FileInputStream(arquivo);
-          //DataInputStream para processar o arquivo solicitado
-          //DataInputStream arq = new DataInputStream(file);
-          saida.flush();
-          //int leitura = arq.read(buffer);
-          //Lendo os bytes do arquivo e enviando para o socket
-
-//          while(leitura != - 1) {
-//            if(leitura != - 2) {
-//              saida.write(buffer,0,leitura);
-//            }
-//            leitura = arq.read(buffer);
-//          }
-
-          saida.writeUTF(msgReceive + " - Recebido - ");
-
-          System.out.println("Cliente atendido com sucesso: " + msgReceive +
-          cliente.getRemoteSocketAddress().toString());
-          }
-         entrada.close();
-         saida.close();
-         cliente.close();
+    public ThreadCliente(String connection_info, Socket connection, SDServer server) {
+        this.connection_info = connection_info;
+        this.connection = connection;
+        this.server = server;
+        this.running = false;
     }
 
-    catch(Exception e) {
-       System.out.println("Excecao ocorrida na thread: " + e.getMessage());
-       try {
-         cliente.close();
-       }
+    public void run() {
+        try {
+            String msgReceive = "";
+            ObjectInputStream entrada = null;
+            ObjectOutputStream saida = null;
 
-       catch(Exception ec) {}
+            while (!msgReceive.equals("sair")) {
+                entrada = new ObjectInputStream(connection.getInputStream());
+                saida = new ObjectOutputStream(connection.getOutputStream());
+                msgReceive = (String) entrada.readObject();
+
+                saida.flush();
+
+                saida.writeObject( " - Recebido - ");
+                
+                System.out.println("#########################################################################");
+                System.out.println("Cliente atendido com sucesso: ");
+                System.out.println("Mensagem Recebida: "+ msgReceive);
+                System.out.println(connection.getRemoteSocketAddress().toString());
+                System.out.println("#########################################################################");
+            }
+
+            entrada.close();
+            saida.close();
+            connection.close();
+        } catch (Exception e) {
+            System.out.println("Excecao ocorrida na thread: " + e.getMessage());
+            try {
+                connection.close();
+            } catch (Exception ec) {
+            }
+        }
     }
-  }
 }

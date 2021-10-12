@@ -8,38 +8,48 @@ package sdServer;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import utils.Utils;
 
 /**
  *
  * @author thi_s
  */
 public class SDServer {
+    
+    private static final int PORT = 1234;
 
-    /**
-     * @param args the command line arguments
-     */
-    public static void main(String[] args) {
-//        if (args.length < 1) {
-//            System.out.println("Informe a porta a ser ouvida pelos servidor");
-//            System.exit(0);
-//        }
+    private ServerSocket server;
+    private Map<String, ThreadCliente> clients;
+    public SDServer(){
+        
+        String connection_info;
+        clients = new HashMap<String, ThreadCliente>();
         try {
-            //Converte o parametro recebido para int (número da porta)
-            int port = 1234;
             System.out.println("Incializando o servidor...");
-            //Iniciliza o servidor
-            ServerSocket serv = new ServerSocket(port);
-            System.out.println("Servidor iniciado, ouvindo a porta " + port);
+            ServerSocket serv = new ServerSocket(PORT);
+            System.out.println("Servidor iniciado, ouvindo a porta " + PORT);
             //Aguarda conexões
             while (true) {
-                Socket clie = serv.accept();
+                Socket connection = serv.accept();
+                connection_info = Utils.receiveMessage(connection);
+                ThreadCliente cl = new ThreadCliente(connection_info, connection, this);
+                clients.put(connection_info, cl);
+                Utils.sendMessage(connection, "Sucess");
                 //Inicia thread do cliente
-                new ThreadCliente(clie).start();
+                //new ThreadCliente(client).start();
             }
         } catch (IOException ex) {
             Logger.getLogger(SDServer.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
+    
+//    private boolean checkLogin(String connection_info){
+//        for(Map.Entry<String,ThreadCliente> pair: clients.entrySet()){
+//            
+//        }
+//    }
 }
