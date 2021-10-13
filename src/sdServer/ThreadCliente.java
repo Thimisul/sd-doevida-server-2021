@@ -28,17 +28,18 @@ public class ThreadCliente extends Thread {
     }
 
     public void run() {
+        running = true;
         try {
             String msgReceive = "";
             ObjectInputStream entrada = null;
             ObjectOutputStream saida = null;
 
-            while (!msgReceive.equals("sair")) {
-                entrada = new ObjectInputStream(connection.getInputStream());
+            while (running) {
+//                entrada = new ObjectInputStream(connection.getInputStream());
                 saida = new ObjectOutputStream(connection.getOutputStream());
-                msgReceive = (String) entrada.readObject();
-
-                saida.flush();
+//                msgReceive = (String) entrada.readObject();
+//
+//                saida.flush();
 
                 saida.writeObject( " - Recebido - ");
                 
