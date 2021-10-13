@@ -5,9 +5,10 @@
  */
 package sdServer;
 
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
+
 import java.net.Socket;
+import java.util.Map;
+import utils.Utils;
 
 /**
  *
@@ -27,37 +28,59 @@ public class ThreadCliente extends Thread {
         this.running = false;
     }
 
-    public void run() {
-        running = true;
-        try {
-            String msgReceive = "";
-            ObjectInputStream entrada = null;
-            ObjectOutputStream saida = null;
-
-            while (running) {
+//    public void run() {
+//        try {
+//            String msgReceive = "";
+//            ObjectInputStream entrada = null;
+//            ObjectOutputStream saida = null;
+//
+//            while (!msgReceive.equals("sair")) {
 //                entrada = new ObjectInputStream(connection.getInputStream());
-                saida = new ObjectOutputStream(connection.getOutputStream());
+//                saida = new ObjectOutputStream(connection.getOutputStream());
 //                msgReceive = (String) entrada.readObject();
 //
 //                saida.flush();
-
-                saida.writeObject( " - Recebido - ");
-                
-                System.out.println("#########################################################################");
-                System.out.println("Cliente atendido com sucesso: ");
-                System.out.println("Mensagem Recebida: "+ msgReceive);
-                System.out.println(connection.getRemoteSocketAddress().toString());
-                System.out.println("#########################################################################");
-            }
-
-            entrada.close();
-            saida.close();
-            connection.close();
-        } catch (Exception e) {
-            System.out.println("Excecao ocorrida na thread: " + e.getMessage());
-            try {
-                connection.close();
-            } catch (Exception ec) {
+//
+//                saida.writeObject( " - Recebido - ");
+//                
+//                System.out.println("#########################################################################");
+//                System.out.println("Cliente atendido com sucesso: ");
+//                System.out.println("Mensagem Recebida: "+ msgReceive);
+//                System.out.println(connection.getRemoteSocketAddress().toString());
+//                System.out.println("#########################################################################");
+//            }
+//
+//            entrada.close();
+//            saida.close();
+//            connection.close();
+//        } catch (Exception e) {
+//            System.out.println("Excecao ocorrida na thread: " + e.getMessage());
+//            try {
+//                connection.close();
+//            } catch (Exception ec) {
+//            }
+//        }
+//    }
+   
+    
+    public void run(){
+                    System.out.println("Thread Iniciada");
+        running = true;
+        String message;
+        while(running){
+            message = Utils.receiveMessage(connection);
+            if(message.equals("QUIT")){
+                System.out.println("running false");
+                running = false;
+            } else if (message.equals("GET_CONNECTED_RECEPTORS")) {
+                System.out.println("Solicitação de lista de receptores...");
+                String response = "";
+                for(Map.Entry<String, ThreadCliente> pair : server.getClients().entrySet()){
+                    response += (pair.getKey() + ";");
+                }
+                Utils.sendMessage(connection, response);
+            } else {
+                System.out.println(connection.getRemoteSocketAddress() + " Enviou: " + message);
             }
         }
     }
