@@ -35,16 +35,35 @@ public class SDServer {
             //Aguarda conexões
             while (true) {
                 Socket connection = serv.accept();
+                System.out.println("Conexao aceita");
                 connection_info = Utils.receiveMessage(connection);
                 ThreadCliente cl = new ThreadCliente(connection_info, connection, this);
                 clients.put(connection_info, cl);
                 Utils.sendMessage(connection, "Sucess");
+                new Thread(cl).start();
                 //Inicia thread do cliente
                 //new ThreadCliente(client).start();
             }
         } catch (IOException ex) {
             Logger.getLogger(SDServer.class.getName()).log(Level.SEVERE, null, ex);
         }
+    }
+    
+    public Map<String, ThreadCliente> getClients(){
+        return clients;
+    }
+    
+    private boolean checkLogin(String connection_info){
+        String[] splited = connection_info.split(":");
+        for(Map.Entry<String, ThreadCliente> pair : clients.entrySet()){
+            String[] parts = pair.getKey().split(":");
+            if (parts[0].equals(splited[0])){
+                return false;
+            }else if((parts[1] + parts[2]).equals(splited[1] + splited[2])){
+                return false;
+            }
+        }
+        return true;
     }
     
 //    private boolean checkLogin(String connection_info){
