@@ -5,7 +5,7 @@
  */
 package sdServer;
 
-import com.sun.security.ntlm.Server;
+//import com.sun.security.ntlm.Server;
 import java.io.DataOutputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
