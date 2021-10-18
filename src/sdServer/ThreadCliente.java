@@ -6,6 +6,7 @@
 package sdServer;
 
 
+import entidades.Usuario;
 import java.net.Socket;
 import java.util.Map;
 import utils.Utils;
@@ -64,7 +65,7 @@ public class ThreadCliente extends Thread {
    
     
     public void run(){
-                    System.out.println("Thread Iniciada");
+        System.out.println("Thread Iniciada");
         running = true;
         String message;
         while(running){
@@ -81,7 +82,7 @@ public class ThreadCliente extends Thread {
                 Utils.sendMessage(connection, response);
             } else {
                 System.out.println(connection.getRemoteSocketAddress() + " Enviou: " + message);
-            }
+            }  
         }
     }
 }
