@@ -71,9 +71,8 @@ public class ThreadCliente extends Thread {
     public void run(){
         System.out.println("Thread Iniciada");
         running = true;
-        String messageJson;
+        String messageJson = "";
         while(running){
-            messageJson = "";
             messageJson = Utils.receiveMessage(connection);
             System.out.println("mensagem recebida -> " + messageJson);
             JSONObject jsonO = new JSONObject(messageJson);
@@ -81,7 +80,7 @@ public class ThreadCliente extends Thread {
             int choice = (Integer) jsonO.opt("protocol");
             System.out.println("A Escolha foi = protocolo:  " + choice) ;
             JSONObject jsonMessageO;
-            UsuarioDAO userDao = new UsuarioDAO();
+            //UsuarioDAO userDao = new UsuarioDAO(); precisa resposta do banco . para continuar
             
              switch ( choice ){
             case 100:
@@ -89,8 +88,18 @@ public class ThreadCliente extends Thread {
                 jsonMessageO = (JSONObject) jsonO.opt("message");
                 String username = (String) jsonMessageO.opt("username");
                 String password = (String) jsonMessageO.opt("password");
-                Usuario user = userDao.userLogin(username, password);
-                //precisa resposta do banco . para continuar
+                //Usuario user = userDao.userLogin(username, password); precisa resposta do banco . para continuar
+               
+                JSONObject response = new JSONObject();
+                JSONObject responseMessage = new JSONObject();
+                responseMessage.put("result", true);
+                response.put("protocol", 101);
+                response.put("message", responseMessage);
+                
+                System.out.println("Resposta - >>> " + response.toString());
+     
+                Utils.sendMessage(connection, response.toString() );
+                messageJson = "";
                 break;
             case 199: //OK
                 System.out.println("--- 199.Logout ---> " + connection.getInetAddress().getHostName());
@@ -106,7 +115,7 @@ public class ThreadCliente extends Thread {
                         1,true, null, null);
                 {
                     try {
-                        userDao.add(newUser);
+                        //userDao.add(newUser);
                     } catch (Exception ex) {
                         Logger.getLogger(ThreadCliente.class.getName()).log(Level.SEVERE, null, ex);
                     }
@@ -123,9 +132,6 @@ public class ThreadCliente extends Thread {
 
         }
              
-            try {
-                connection.close();
-                
 //            if(message.equals("QUIT")){
 //                System.out.println("running false");
 //                running = false;
@@ -139,9 +145,11 @@ public class ThreadCliente extends Thread {
 //            } else {
 //                System.out.println(connection.getRemoteSocketAddress() + " Enviou: " + message);
 //            }  
-            } catch (IOException ex) {
-                Logger.getLogger(ThreadCliente.class.getName()).log(Level.SEVERE, null, ex);
-            }
+        }
+        try {
+            connection.close();
+        } catch (IOException ex) {
+            Logger.getLogger(ThreadCliente.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 }

@@ -37,7 +37,8 @@ import javax.persistence.TemporalType;
     @NamedQuery(name = "Usuario.findByType", query = "SELECT u FROM Usuario u WHERE u.type = :type"),
     @NamedQuery(name = "Usuario.findByValidated", query = "SELECT u FROM Usuario u WHERE u.validated = :validated"),
     @NamedQuery(name = "Usuario.findByDateCreation", query = "SELECT u FROM Usuario u WHERE u.dateCreation = :dateCreation"),
-    @NamedQuery(name = "Usuario.findByDateValidated", query = "SELECT u FROM Usuario u WHERE u.dateValidated = :dateValidated")})
+    @NamedQuery(name = "Usuario.findByDateValidated", query = "SELECT u FROM Usuario u WHERE u.dateValidated = :dateValidated"),
+    @NamedQuery(name = "Usuario.login", query = "SELECT u FROM Usuario u WHERE u.username = :username and u.password = :password")})
 public class Usuario implements Serializable {
 
     private static final long serialVersionUID = 1L;
