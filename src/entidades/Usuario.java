@@ -5,6 +5,7 @@
  */
 package entidades;
 
+import DAO.UsuarioDAO;
 import java.io.Serializable;
 import java.util.Collection;
 import java.util.Date;
@@ -183,5 +184,5 @@ public class Usuario implements Serializable {
     public String toString() {
         return "entidades.Usuario[ id=" + id + " ]";
     }
-    
+
 }

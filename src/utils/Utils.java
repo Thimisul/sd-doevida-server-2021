@@ -37,6 +37,7 @@ public class Utils {
         try {
             ObjectInputStream input = new ObjectInputStream(connection.getInputStream());
             response = (String) input.readObject();
+            input.close();
         } catch (IOException ex) {
             Logger.getLogger(Utils.class.getName()).log(Level.SEVERE, null, ex);
         } catch (ClassNotFoundException ex) {

@@ -58,9 +58,9 @@ public class UsuarioDAO {
         }
     }
     
-     //public Usuarios userLogin(String email, String password){
-     //   Usuarios login = objetoJPA.login(email, password);
-     //   System.out.println( "DAO   -    " + login.getEmail());
-     //   return login;
-     //   }    
+    public Usuario userLogin(String username, String password){
+        Usuario login = objetoJPA.login(username, password);
+        System.out.println( "DAO   -    " + login.getName());
+        return login;
+    }  
 }

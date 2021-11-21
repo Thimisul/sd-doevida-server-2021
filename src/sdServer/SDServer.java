@@ -30,19 +30,22 @@ public class SDServer {
         clients = new HashMap<String, ThreadCliente>();
         try {
             System.out.println("Incializando o servidor...");
-            ServerSocket serv = new ServerSocket(PORT);
+            server = new ServerSocket(PORT);
             System.out.println("Servidor iniciado, ouvindo a porta " + PORT);
             //Aguarda conexões
             while (true) {
-                Socket connection = serv.accept();
+                Socket connection = server.accept();
                 System.out.println("Conexao aceita");
-                connection_info = Utils.receiveMessage(connection);
+                //connection_info = Utils.receiveMessage(connection);
+                connection_info  = "0";
                 ThreadCliente cl = new ThreadCliente(connection_info, connection, this);
                 clients.put(connection_info, cl);
-                Utils.sendMessage(connection, "Sucess");
+                //Utils.sendMessage(connection, "Sucess");             
+                //System.out.println(clients.get(0));
                 new Thread(cl).start();
                 //Inicia thread do cliente
                 //new ThreadCliente(client).start();
+                
             }
         } catch (IOException ex) {
             Logger.getLogger(SDServer.class.getName()).log(Level.SEVERE, null, ex);
