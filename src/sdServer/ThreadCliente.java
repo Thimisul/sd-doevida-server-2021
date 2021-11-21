@@ -99,7 +99,6 @@ public class ThreadCliente extends Thread {
                 System.out.println("Resposta - >>> " + response.toString());
      
                 Utils.sendMessage(connection, response.toString() );
-                messageJson = "";
                 break;
             case 199: //OK
                 System.out.println("--- 199.Logout ---> " + connection.getInetAddress().getHostName());
