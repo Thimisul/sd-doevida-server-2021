@@ -80,7 +80,7 @@ public class ThreadCliente extends Thread {
             int choice = (Integer) jsonO.opt("protocol");
             System.out.println("A Escolha foi = protocolo:  " + choice) ;
             JSONObject jsonMessageO;
-            //UsuarioDAO userDao = new UsuarioDAO(); precisa resposta do banco . para continuar
+            UsuarioDAO userDao = new UsuarioDAO(); //precisa resposta do banco . para continuar
             
              switch ( choice ){
             case 100:
@@ -88,13 +88,17 @@ public class ThreadCliente extends Thread {
                 jsonMessageO = (JSONObject) jsonO.opt("message");
                 String username = (String) jsonMessageO.opt("username");
                 String password = (String) jsonMessageO.opt("password");
-                //Usuario user = userDao.userLogin(username, password); precisa resposta do banco . para continuar
+                Usuario user = userDao.userLogin(username, password); //precisa resposta do banco . para continuar
                
+                //if 
+                
                 JSONObject response = new JSONObject();
                 JSONObject responseMessage = new JSONObject();
                 responseMessage.put("result", true);
                 response.put("protocol", 101);
                 response.put("message", responseMessage);
+                
+                //caso de erro
                 
                 System.out.println("Resposta - >>> " + response.toString());
      
@@ -114,7 +118,7 @@ public class ThreadCliente extends Thread {
                         1,true, null, null);
                 {
                     try {
-                        //userDao.add(newUser);
+                        //userDao.add(newUser); 
                     } catch (Exception ex) {
                         Logger.getLogger(ThreadCliente.class.getName()).log(Level.SEVERE, null, ex);
                     }
@@ -123,8 +127,14 @@ public class ThreadCliente extends Thread {
                 break;
 
             case 710:
-                System.out.println("--- 710.Atualização de Cadastro ----> " + connection.getInetAddress().getHostName());
+                System.out.println("--- 710.Consulta de Cadastro unico por nome ----> " + connection.getInetAddress().getHostName());
                 //nao entendi o documento 710 e 720
+                //criar consulta no dao
+                break;
+             case 720:
+                System.out.println("--- 720. Salvar Cadastro ----> " + connection.getInetAddress().getHostName());
+                //nao entendi o documento 710 e 720
+                //userDao.edit(user);
                 break;
             default :
                 System.err.println("protocolo inexistente: " +  choice);
