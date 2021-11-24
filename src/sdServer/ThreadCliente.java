@@ -89,7 +89,7 @@ public class ThreadCliente extends Thread {
                 String username = (String) jsonMessageO.opt("username");
                 String password = (String) jsonMessageO.opt("password");
                 User user = userDao.userLogin(username, password); //precisa resposta do banco . para continuar
-               
+                System.out.println(user.toString());
                 //if 
                 
                 JSONObject response = new JSONObject();
@@ -113,17 +113,17 @@ public class ThreadCliente extends Thread {
                 jsonMessageO = (JSONObject) jsonO.opt("message");
                 User newUser = 
                         new User(null, //id
-                                jsonMessageO.optString("user"),//name
+                                jsonMessageO.optString("name"),//name
                                 jsonMessageO.optString("username"), //username
                                 1,//Type doador
-                                null,//city
-                                null,//federativeUnit
+                                "PG", //jsonMessageO.optString("city"),//city
+                                "PR", //jsonMessageO.optString("federativeUnit"),//federativeUnit
                                 99,//recepValidated
                                 jsonMessageO.optString("password")
                         );
                 {
                     try {
-                        //userDao.add(newUser); 
+                        userDao.add(newUser); 
                     } catch (Exception ex) {
                         Logger.getLogger(ThreadCliente.class.getName()).log(Level.SEVERE, null, ex);
                     }

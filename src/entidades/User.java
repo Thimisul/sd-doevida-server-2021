@@ -77,7 +77,7 @@ public class User implements Serializable {
     public User(Integer id, String name, String username, int userType, String city, String federativeUnit, int recepValidated, String password) {
         this.id = id;
         this.name = name;
-        this.username = this.username;
+        this.username = username;
         this.userType = userType;
         this.city = city;
         this.federativeUnit = federativeUnit;
