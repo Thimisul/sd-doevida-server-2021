@@ -26,13 +26,15 @@ import javax.persistence.TemporalType;
  * @author lsilva
  */
 @Entity
-@Table(name = "doacao")
+@Table(name = "donation")
 @NamedQueries({
-    @NamedQuery(name = "Doacao.findAll", query = "SELECT d FROM Doacao d"),
-    @NamedQuery(name = "Doacao.findById", query = "SELECT d FROM Doacao d WHERE d.id = :id"),
-    @NamedQuery(name = "Doacao.findByValue", query = "SELECT d FROM Doacao d WHERE d.value = :value"),
-    @NamedQuery(name = "Doacao.findByDateDonation", query = "SELECT d FROM Doacao d WHERE d.dateDonation = :dateDonation")})
-public class Doacao implements Serializable {
+    @NamedQuery(name = "Donation.findAll", query = "SELECT d FROM Donation d"),
+    @NamedQuery(name = "Donation.findById", query = "SELECT d FROM Donation d WHERE d.id = :id"),
+    @NamedQuery(name = "Donation.findByIdRecipient", query = "SELECT d FROM Donation d WHERE d.idRecipient = :idRecipient"),
+    @NamedQuery(name = "Donation.findByDateDonation", query = "SELECT d FROM Donation d WHERE d.dateDonation = :dateDonation"),
+    @NamedQuery(name = "Donation.findByIsAnon", query = "SELECT d FROM Donation d WHERE d.isAnon = :isAnon"),
+    @NamedQuery(name = "Donation.findByValue", query = "SELECT d FROM Donation d WHERE d.value = :value")})
+public class Donation implements Serializable {
 
     private static final long serialVersionUID = 1L;
     @Id
@@ -41,30 +43,35 @@ public class Doacao implements Serializable {
     @Column(name = "id")
     private Integer id;
     @Basic(optional = false)
-    @Column(name = "value")
-    private float value;
+    @Column(name = "id_recipient")
+    private int idRecipient;
     @Basic(optional = false)
     @Column(name = "date_donation")
-    @Temporal(TemporalType.TIMESTAMP)
+    @Temporal(TemporalType.DATE)
     private Date dateDonation;
+    @Basic(optional = false)
+    @Column(name = "is_anon")
+    private boolean isAnon;
+    @Basic(optional = false)
+    @Column(name = "value")
+    private int value;
     @JoinColumn(name = "id_donor", referencedColumnName = "id")
     @ManyToOne(optional = false)
-    private Usuario idDonor;
-    @JoinColumn(name = "id_recipient", referencedColumnName = "id")
-    @ManyToOne(optional = false)
-    private Usuario idRecipient;
+    private User idDonor;
 
-    public Doacao() {
+    public Donation() {
     }
 
-    public Doacao(Integer id) {
+    public Donation(Integer id) {
         this.id = id;
     }
 
-    public Doacao(Integer id, float value, Date dateDonation) {
+    public Donation(Integer id, int idRecipient, Date dateDonation, boolean isAnon, int value) {
         this.id = id;
-        this.value = value;
+        this.idRecipient = idRecipient;
         this.dateDonation = dateDonation;
+        this.isAnon = isAnon;
+        this.value = value;
     }
 
     public Integer getId() {
@@ -75,12 +82,12 @@ public class Doacao implements Serializable {
         this.id = id;
     }
 
-    public float getValue() {
-        return value;
+    public int getIdRecipient() {
+        return idRecipient;
     }
 
-    public void setValue(float value) {
-        this.value = value;
+    public void setIdRecipient(int idRecipient) {
+        this.idRecipient = idRecipient;
     }
 
     public Date getDateDonation() {
@@ -91,20 +98,28 @@ public class Doacao implements Serializable {
         this.dateDonation = dateDonation;
     }
 
-    public Usuario getIdDonor() {
+    public boolean getIsAnon() {
+        return isAnon;
+    }
+
+    public void setIsAnon(boolean isAnon) {
+        this.isAnon = isAnon;
+    }
+
+    public int getValue() {
+        return value;
+    }
+
+    public void setValue(int value) {
+        this.value = value;
+    }
+
+    public User getIdDonor() {
         return idDonor;
     }
 
-    public void setIdDonor(Usuario idDonor) {
+    public void setIdDonor(User idDonor) {
         this.idDonor = idDonor;
-    }
-
-    public Usuario getIdRecipient() {
-        return idRecipient;
-    }
-
-    public void setIdRecipient(Usuario idRecipient) {
-        this.idRecipient = idRecipient;
     }
 
     @Override
@@ -117,10 +132,10 @@ public class Doacao implements Serializable {
     @Override
     public boolean equals(Object object) {
         // TODO: Warning - this method won't work in the case the id fields are not set
-        if (!(object instanceof Doacao)) {
+        if (!(object instanceof Donation)) {
             return false;
         }
-        Doacao other = (Doacao) object;
+        Donation other = (Donation) object;
         if ((this.id == null && other.id != null) || (this.id != null && !this.id.equals(other.id))) {
             return false;
         }
@@ -129,7 +144,7 @@ public class Doacao implements Serializable {
 
     @Override
     public String toString() {
-        return "entidades.Doacao[ id=" + id + " ]";
+        return "entidades.Donation[ id=" + id + " ]";
     }
     
 }

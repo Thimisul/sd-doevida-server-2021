@@ -5,12 +5,12 @@
  */
 package DAO;
 
-import entidades.Usuario;
+import entidades.User;
 import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
-import jpaControles.UsuarioJpaController;
+import jpaControles.UserJpaController;
 import jpaControles.exceptions.IllegalOrphanException;
 import jpaControles.exceptions.NonexistentEntityException;
 
@@ -18,20 +18,20 @@ import jpaControles.exceptions.NonexistentEntityException;
  *
  * @author lsilva
  */
-public class UsuarioDAO {
-        private final UsuarioJpaController objetoJPA;
+public class UserDAO {
+        private final UserJpaController objetoJPA;
     private final EntityManagerFactory emf;
 
-    public UsuarioDAO(){
+    public UserDAO(){
         emf=Persistence.createEntityManagerFactory("SDServerPU");
-        objetoJPA = new UsuarioJpaController(emf);
+        objetoJPA = new UserJpaController(emf);
     }
     
-    public void add(Usuario objeto) throws Exception{
+    public void add(User objeto) throws Exception{
         objetoJPA.create(objeto);
     }
     
-    public void edit(Usuario objeto) throws Exception{
+    public void edit(User objeto) throws Exception{
         objetoJPA.edit(objeto);
     }
     
@@ -39,12 +39,12 @@ public class UsuarioDAO {
         objetoJPA.destroy(id);
     }
     
-    public List<Usuario> geAllUsuario(){
-        return objetoJPA.findUsuarioEntities();
+    public List<User> geAllUsuario(){
+        return objetoJPA.findUserEntities();
     }
     
     
-    public void persist (Usuario object){
+    public void persist (User object){
         EntityManager em = emf.createEntityManager();
         em.getTransaction().begin();
         try{
@@ -58,8 +58,8 @@ public class UsuarioDAO {
         }
     }
     
-    public Usuario userLogin(String username, String password){
-        Usuario login = objetoJPA.login(username, password);
+    public User userLogin(String username, String password){
+        User login = objetoJPA.login(username, password);
         System.out.println( "DAO   -    " + login.getName());
         return login;
     }  

@@ -5,8 +5,8 @@
  */
 package sdServer;
 
-import DAO.UsuarioDAO;
-import entidades.Usuario;
+import DAO.UserDAO;
+import entidades.User;
 import java.io.IOException;
 import java.net.Socket;
 import java.util.Map;
@@ -80,7 +80,7 @@ public class ThreadCliente extends Thread {
             int choice = (Integer) jsonO.opt("protocol");
             System.out.println("A Escolha foi = protocolo:  " + choice) ;
             JSONObject jsonMessageO;
-            UsuarioDAO userDao = new UsuarioDAO(); //precisa resposta do banco . para continuar
+            UserDAO userDao = new UserDAO(); //precisa resposta do banco . para continuar
             
              switch ( choice ){
             case 100:
@@ -88,7 +88,7 @@ public class ThreadCliente extends Thread {
                 jsonMessageO = (JSONObject) jsonO.opt("message");
                 String username = (String) jsonMessageO.opt("username");
                 String password = (String) jsonMessageO.opt("password");
-                Usuario user = userDao.userLogin(username, password); //precisa resposta do banco . para continuar
+                User user = userDao.userLogin(username, password); //precisa resposta do banco . para continuar
                
                 //if 
                 
@@ -111,8 +111,8 @@ public class ThreadCliente extends Thread {
             case 700:
                 System.out.println("--- 700.Cadastro ----> " + connection.getInetAddress().getHostName());
                 jsonMessageO = (JSONObject) jsonO.opt("message");
-                Usuario newUser = 
-                        new Usuario(null, 
+                User newUser = 
+                        new User(null, 
                                 jsonMessageO.optString("username"), 
                                 jsonMessageO.optString("password"),
                         1,true, null, null);

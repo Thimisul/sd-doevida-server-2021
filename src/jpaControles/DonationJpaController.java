@@ -5,13 +5,13 @@
  */
 package jpaControles;
 
-import entidades.Doacao;
+import entidades.Donation;
 import java.io.Serializable;
 import javax.persistence.Query;
 import javax.persistence.EntityNotFoundException;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
-import entidades.Usuario;
+import entidades.User;
 import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
@@ -21,9 +21,9 @@ import jpaControles.exceptions.NonexistentEntityException;
  *
  * @author lsilva
  */
-public class DoacaoJpaController implements Serializable {
+public class DonationJpaController implements Serializable {
 
-    public DoacaoJpaController(EntityManagerFactory emf) {
+    public DonationJpaController(EntityManagerFactory emf) {
         this.emf = emf;
     }
     private EntityManagerFactory emf = null;
@@ -32,29 +32,20 @@ public class DoacaoJpaController implements Serializable {
         return emf.createEntityManager();
     }
 
-    public void create(Doacao doacao) {
+    public void create(Donation donation) {
         EntityManager em = null;
         try {
             em = getEntityManager();
             em.getTransaction().begin();
-            Usuario idDonor = doacao.getIdDonor();
+            User idDonor = donation.getIdDonor();
             if (idDonor != null) {
                 idDonor = em.getReference(idDonor.getClass(), idDonor.getId());
-                doacao.setIdDonor(idDonor);
+                donation.setIdDonor(idDonor);
             }
-            Usuario idRecipient = doacao.getIdRecipient();
-            if (idRecipient != null) {
-                idRecipient = em.getReference(idRecipient.getClass(), idRecipient.getId());
-                doacao.setIdRecipient(idRecipient);
-            }
-            em.persist(doacao);
+            em.persist(donation);
             if (idDonor != null) {
-                idDonor.getDoacaoCollection().add(doacao);
+                idDonor.getDonationCollection().add(donation);
                 idDonor = em.merge(idDonor);
-            }
-            if (idRecipient != null) {
-                idRecipient.getDoacaoCollection().add(doacao);
-                idRecipient = em.merge(idRecipient);
             }
             em.getTransaction().commit();
         } finally {
@@ -64,48 +55,34 @@ public class DoacaoJpaController implements Serializable {
         }
     }
 
-    public void edit(Doacao doacao) throws NonexistentEntityException, Exception {
+    public void edit(Donation donation) throws NonexistentEntityException, Exception {
         EntityManager em = null;
         try {
             em = getEntityManager();
             em.getTransaction().begin();
-            Doacao persistentDoacao = em.find(Doacao.class, doacao.getId());
-            Usuario idDonorOld = persistentDoacao.getIdDonor();
-            Usuario idDonorNew = doacao.getIdDonor();
-            Usuario idRecipientOld = persistentDoacao.getIdRecipient();
-            Usuario idRecipientNew = doacao.getIdRecipient();
+            Donation persistentDonation = em.find(Donation.class, donation.getId());
+            User idDonorOld = persistentDonation.getIdDonor();
+            User idDonorNew = donation.getIdDonor();
             if (idDonorNew != null) {
                 idDonorNew = em.getReference(idDonorNew.getClass(), idDonorNew.getId());
-                doacao.setIdDonor(idDonorNew);
+                donation.setIdDonor(idDonorNew);
             }
-            if (idRecipientNew != null) {
-                idRecipientNew = em.getReference(idRecipientNew.getClass(), idRecipientNew.getId());
-                doacao.setIdRecipient(idRecipientNew);
-            }
-            doacao = em.merge(doacao);
+            donation = em.merge(donation);
             if (idDonorOld != null && !idDonorOld.equals(idDonorNew)) {
-                idDonorOld.getDoacaoCollection().remove(doacao);
+                idDonorOld.getDonationCollection().remove(donation);
                 idDonorOld = em.merge(idDonorOld);
             }
             if (idDonorNew != null && !idDonorNew.equals(idDonorOld)) {
-                idDonorNew.getDoacaoCollection().add(doacao);
+                idDonorNew.getDonationCollection().add(donation);
                 idDonorNew = em.merge(idDonorNew);
-            }
-            if (idRecipientOld != null && !idRecipientOld.equals(idRecipientNew)) {
-                idRecipientOld.getDoacaoCollection().remove(doacao);
-                idRecipientOld = em.merge(idRecipientOld);
-            }
-            if (idRecipientNew != null && !idRecipientNew.equals(idRecipientOld)) {
-                idRecipientNew.getDoacaoCollection().add(doacao);
-                idRecipientNew = em.merge(idRecipientNew);
             }
             em.getTransaction().commit();
         } catch (Exception ex) {
             String msg = ex.getLocalizedMessage();
             if (msg == null || msg.length() == 0) {
-                Integer id = doacao.getId();
-                if (findDoacao(id) == null) {
-                    throw new NonexistentEntityException("The doacao with id " + id + " no longer exists.");
+                Integer id = donation.getId();
+                if (findDonation(id) == null) {
+                    throw new NonexistentEntityException("The donation with id " + id + " no longer exists.");
                 }
             }
             throw ex;
@@ -121,24 +98,19 @@ public class DoacaoJpaController implements Serializable {
         try {
             em = getEntityManager();
             em.getTransaction().begin();
-            Doacao doacao;
+            Donation donation;
             try {
-                doacao = em.getReference(Doacao.class, id);
-                doacao.getId();
+                donation = em.getReference(Donation.class, id);
+                donation.getId();
             } catch (EntityNotFoundException enfe) {
-                throw new NonexistentEntityException("The doacao with id " + id + " no longer exists.", enfe);
+                throw new NonexistentEntityException("The donation with id " + id + " no longer exists.", enfe);
             }
-            Usuario idDonor = doacao.getIdDonor();
+            User idDonor = donation.getIdDonor();
             if (idDonor != null) {
-                idDonor.getDoacaoCollection().remove(doacao);
+                idDonor.getDonationCollection().remove(donation);
                 idDonor = em.merge(idDonor);
             }
-            Usuario idRecipient = doacao.getIdRecipient();
-            if (idRecipient != null) {
-                idRecipient.getDoacaoCollection().remove(doacao);
-                idRecipient = em.merge(idRecipient);
-            }
-            em.remove(doacao);
+            em.remove(donation);
             em.getTransaction().commit();
         } finally {
             if (em != null) {
@@ -147,19 +119,19 @@ public class DoacaoJpaController implements Serializable {
         }
     }
 
-    public List<Doacao> findDoacaoEntities() {
-        return findDoacaoEntities(true, -1, -1);
+    public List<Donation> findDonationEntities() {
+        return findDonationEntities(true, -1, -1);
     }
 
-    public List<Doacao> findDoacaoEntities(int maxResults, int firstResult) {
-        return findDoacaoEntities(false, maxResults, firstResult);
+    public List<Donation> findDonationEntities(int maxResults, int firstResult) {
+        return findDonationEntities(false, maxResults, firstResult);
     }
 
-    private List<Doacao> findDoacaoEntities(boolean all, int maxResults, int firstResult) {
+    private List<Donation> findDonationEntities(boolean all, int maxResults, int firstResult) {
         EntityManager em = getEntityManager();
         try {
             CriteriaQuery cq = em.getCriteriaBuilder().createQuery();
-            cq.select(cq.from(Doacao.class));
+            cq.select(cq.from(Donation.class));
             Query q = em.createQuery(cq);
             if (!all) {
                 q.setMaxResults(maxResults);
@@ -171,20 +143,20 @@ public class DoacaoJpaController implements Serializable {
         }
     }
 
-    public Doacao findDoacao(Integer id) {
+    public Donation findDonation(Integer id) {
         EntityManager em = getEntityManager();
         try {
-            return em.find(Doacao.class, id);
+            return em.find(Donation.class, id);
         } finally {
             em.close();
         }
     }
 
-    public int getDoacaoCount() {
+    public int getDonationCount() {
         EntityManager em = getEntityManager();
         try {
             CriteriaQuery cq = em.getCriteriaBuilder().createQuery();
-            Root<Doacao> rt = cq.from(Doacao.class);
+            Root<Donation> rt = cq.from(Donation.class);
             cq.select(em.getCriteriaBuilder().count(rt));
             Query q = em.createQuery(cq);
             return ((Long) q.getSingleResult()).intValue();
