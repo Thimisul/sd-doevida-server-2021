@@ -202,7 +202,7 @@ public class UserJpaController implements Serializable {
         }
     }
 
-    public User getUserByUsername(String username) throws NoResultException{
+    public User getUserByUsername(String username) {
         EntityManager em = getEntityManager();
         try {
             Query q = em.createNamedQuery("User.findByUsername");
@@ -210,15 +210,16 @@ public class UserJpaController implements Serializable {
 
             System.out.println(q.getSingleResult());
             User userFind = (User) q.getSingleResult();
-            System.out.println(userFind.getName() + " Encontrado ");
-            System.out.println(userFind);
+            System.out.println(userFind + " Encontrado ");
             return userFind;
+        } catch (NoResultException ex) {
+            return null;
         } finally {
             em.close();
-        } 
+        }
     }
 
-    public User login(String username, String password)throws NoResultException {
+    public User login(String username, String password) throws NoResultException {
         EntityManager em = getEntityManager();
         try {
             Query q = em.createNamedQuery("User.login");
@@ -227,11 +228,11 @@ public class UserJpaController implements Serializable {
 
             System.out.println(q.getSingleResult());
             User userLoged = (User) q.getSingleResult();
-            System.out.println(userLoged.getName() + " Logado ");
+            System.out.println(userLoged + " Logado ");
             System.out.println(userLoged);
             return userLoged;
         } finally {
             em.close();
-        }  
+        }
     }
 }

@@ -131,10 +131,10 @@ public class ThreadCliente extends Thread {
 
                     findUser = userDao.getUserByUsername(jsonMessageO.optString("username"));
 
-                    if (findUser != null) {
+                    if (findUser == null) {
                 try {
                     userDao.add(newUser);
-                    System.out.println("Usuario Cadastrado" + findUser.toString());
+                    System.out.println("Usuario Cadastrado" + findUser);
                     responseMessage.put("result", true);
                     response.put("protocol", 101);
                     response.put("message", responseMessage);
@@ -142,7 +142,7 @@ public class ThreadCliente extends Thread {
                     Logger.getLogger(ThreadCliente.class.getName()).log(Level.SEVERE, null, ex);
                 }
                     } else {
-                        System.out.println("Usuario já existe" + findUser.toString());
+                        System.out.println("Usuario já existe" + findUser);
                         responseMessage.put("result", false);
                         responseMessage.put("reason", "Usuario já existe");
                         response.put("protocol", 702);

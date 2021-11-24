@@ -60,13 +60,13 @@ public class UserDAO {
     
     public User userLogin(String username, String password){
         User login = objetoJPA.login(username, password);
-        System.out.println( "DAO   -    " + login.getName());
+        System.out.println( "DAO   -    " + login);
         return login;
     }  
     
     public User getUserByUsername(String username){
         User userFind = objetoJPA.getUserByUsername(username);
-        System.out.println( "DAO   -    " + userFind.getName());
+        System.out.println( "DAO   -    " + userFind);
         return userFind;
     }  
 }
