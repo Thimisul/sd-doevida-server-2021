@@ -205,7 +205,7 @@ public class UserJpaController implements Serializable {
     public User getUserByUsername(String username) throws NoResultException{
         EntityManager em = getEntityManager();
         try {
-            Query q = em.createNamedQuery("User.findByName");
+            Query q = em.createNamedQuery("User.findByUsername");
             q.setParameter("username", username);
 
             System.out.println(q.getSingleResult());
