@@ -113,7 +113,8 @@ public class ThreadCliente extends Thread {
                 jsonMessageO = (JSONObject) jsonO.opt("message");
                 User newUser = 
                         new User(null, //id
-                                jsonMessageO.optString("username"),//name 
+                                jsonMessageO.optString("user"),//name
+                                jsonMessageO.optString("username"), //username
                                 1,//Type doador
                                 null,//city
                                 null,//federativeUnit

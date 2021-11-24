@@ -34,7 +34,7 @@ import javax.persistence.Table;
     @NamedQuery(name = "User.findByFederativeUnit", query = "SELECT u FROM User u WHERE u.federativeUnit = :federativeUnit"),
     @NamedQuery(name = "User.findByRecepValidated", query = "SELECT u FROM User u WHERE u.recepValidated = :recepValidated"),
     @NamedQuery(name = "User.findByPassword", query = "SELECT u FROM User u WHERE u.password = :password"),
-    @NamedQuery(name = "User.login", query = "SELECT u FROM User u WHERE u.name = :username and u.password = :password")})
+    @NamedQuery(name = "User.login", query = "SELECT u FROM User u WHERE u.username = :username and u.password = :password")})
 public class User implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -46,6 +46,9 @@ public class User implements Serializable {
     @Basic(optional = false)
     @Column(name = "name")
     private String name;
+    @Basic(optional = false)
+    @Column(name = "username")
+    private String username;
     @Basic(optional = false)
     @Column(name = "user_type")
     private int userType;
@@ -71,9 +74,10 @@ public class User implements Serializable {
         this.id = id;
     }
 
-    public User(Integer id, String name, int userType, String city, String federativeUnit, int recepValidated, String password) {
+    public User(Integer id, String name, String username, int userType, String city, String federativeUnit, int recepValidated, String password) {
         this.id = id;
         this.name = name;
+        this.username = this.username;
         this.userType = userType;
         this.city = city;
         this.federativeUnit = federativeUnit;
@@ -95,6 +99,14 @@ public class User implements Serializable {
 
     public void setName(String name) {
         this.name = name;
+    }
+    
+        public String getUserName() {
+        return name;
+    }
+
+    public void setUserName(String username) {
+        this.username = username;
     }
 
     public int getUserType() {
