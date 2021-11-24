@@ -17,6 +17,7 @@ import java.util.Collection;
 import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
+import javax.persistence.NoResultException;
 import jpaControles.exceptions.IllegalOrphanException;
 import jpaControles.exceptions.NonexistentEntityException;
 
@@ -200,21 +201,37 @@ public class UserJpaController implements Serializable {
             em.close();
         }
     }
-    
-        public User login(String username, String password) {
+
+    public User getUserByUsername(String username) throws NoResultException{
+        EntityManager em = getEntityManager();
+        try {
+            Query q = em.createNamedQuery("User.findByName");
+            q.setParameter("username", username);
+
+            System.out.println(q.getSingleResult());
+            User userFind = (User) q.getSingleResult();
+            System.out.println(userFind.getName() + " Encontrado ");
+            System.out.println(userFind);
+            return userFind;
+        } finally {
+            em.close();
+        } 
+    }
+
+    public User login(String username, String password)throws NoResultException {
         EntityManager em = getEntityManager();
         try {
             Query q = em.createNamedQuery("User.login");
             q.setParameter("username", username);
             q.setParameter("password", password);
-           
-            System.out.println(q.getSingleResult() );
-            User userLoged =  (User) q.getSingleResult();
-            System.out.println(userLoged.getName());
-            return  userLoged;
+
+            System.out.println(q.getSingleResult());
+            User userLoged = (User) q.getSingleResult();
+            System.out.println(userLoged.getName() + " Logado ");
+            System.out.println(userLoged);
+            return userLoged;
         } finally {
             em.close();
-        }
+        }  
     }
-    
 }

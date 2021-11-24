@@ -63,4 +63,10 @@ public class UserDAO {
         System.out.println( "DAO   -    " + login.getName());
         return login;
     }  
+    
+    public User getUserByUsername(String username){
+        User userFind = objetoJPA.getUserByUsername(username);
+        System.out.println( "DAO   -    " + userFind.getName());
+        return userFind;
+    }  
 }

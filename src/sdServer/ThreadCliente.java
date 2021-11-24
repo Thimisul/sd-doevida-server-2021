@@ -66,86 +66,117 @@ public class ThreadCliente extends Thread {
 //            }
 //        }
 //    }
-   
-    
-    public void run(){
+    public void run() {
         System.out.println("Thread Iniciada");
         running = true;
         String messageJson = "";
-        while(running){
+        User findUser;
+        User newUser;
+        JSONObject jsonMessageO = null;
+        JSONObject response = new JSONObject();
+        JSONObject responseMessage = new JSONObject();
+        while (running) {
             messageJson = Utils.receiveMessage(connection);
             System.out.println("mensagem recebida -> " + messageJson);
             JSONObject jsonO = new JSONObject(messageJson);
             System.out.println("mensagem json -> " + jsonO.toString());
             int choice = (Integer) jsonO.opt("protocol");
-            System.out.println("A Escolha foi = protocolo:  " + choice) ;
-            JSONObject jsonMessageO;
-            UserDAO userDao = new UserDAO(); //precisa resposta do banco . para continuar
+            System.out.println("A Escolha foi = protocolo:  " + choice);
             
-             switch ( choice ){
-            case 100:
-                System.out.println("--- 100.Login ----> " + connection.getInetAddress().getHostName());
-                jsonMessageO = (JSONObject) jsonO.opt("message");
-                String username = (String) jsonMessageO.opt("username");
-                String password = (String) jsonMessageO.opt("password");
-                User user = userDao.userLogin(username, password); //precisa resposta do banco . para continuar
-                System.out.println(user.toString());
-                //if 
-                
-                JSONObject response = new JSONObject();
-                JSONObject responseMessage = new JSONObject();
-                responseMessage.put("result", true);
-                response.put("protocol", 101);
-                response.put("message", responseMessage);
-                
-                //caso de erro
-                
-                System.out.println("Resposta - >>> " + response.toString());
-     
-                Utils.sendMessage(connection, response.toString() );
-                break;
-            case 199: //OK
-                System.out.println("--- 199.Logout ---> " + connection.getInetAddress().getHostName());
-                running = false;
-                break;
-            case 700:
-                System.out.println("--- 700.Cadastro ----> " + connection.getInetAddress().getHostName());
-                jsonMessageO = (JSONObject) jsonO.opt("message");
-                User newUser = 
-                        new User(null, //id
-                                jsonMessageO.optString("name"),//name
-                                jsonMessageO.optString("username"), //username
-                                1,//Type doador
-                                "PG", //jsonMessageO.optString("city"),//city
-                                "PR", //jsonMessageO.optString("federativeUnit"),//federativeUnit
-                                99,//recepValidated
-                                jsonMessageO.optString("password")
-                        );
-                {
-                    try {
-                        userDao.add(newUser); 
-                    } catch (Exception ex) {
-                        Logger.getLogger(ThreadCliente.class.getName()).log(Level.SEVERE, null, ex);
+            UserDAO userDao = new UserDAO(); //precisa resposta do banco . para continuar
+
+            switch (choice) {
+                case 100: //OK
+                    System.out.println("--- 100.Login ----> " + connection.getInetAddress().getHostName());
+                    jsonMessageO = (JSONObject) jsonO.opt("message");
+                    String username = (String) jsonMessageO.opt("username");
+                    String password = (String) jsonMessageO.opt("password");
+                    User user = userDao.userLogin(username, password);
+                    
+                    if (user == null) {
+                        System.out.println("Username ou password incorretos" + user.toString());
+                        responseMessage.put("result", false);
+                        responseMessage.put("reason", "Login Falhou");
+                        response.put("protocol", 102);
+                        response.put("message", responseMessage);
+                    } else {
+                        System.out.println("Usuario encontrado" + user.toString());
+                        responseMessage.put("result", true);
+                        response.put("protocol", 101);
+                        response.put("message", responseMessage);
                     }
+
+                    System.out.println("Resposta - >>> " + response.toString());
+                    Utils.sendMessage(connection, response.toString());
+                    break;
+
+                case 199: //OK
+                    System.out.println("--- 199.Logout ---> " + connection.getInetAddress().getHostName());
+                    running = false;
+                    break;
+
+                case 700: //OK
+                    System.out.println("--- 700.Cadastro ----> " + connection.getInetAddress().getHostName());
+                    jsonMessageO = (JSONObject) jsonO.opt("message");
+                    newUser
+                            = new User(null, //id
+                                    jsonMessageO.optString("name"),//name
+                                    jsonMessageO.optString("username"), //username
+                                    1,//Type doador
+                                    "PG", //jsonMessageO.optString("city"),//city
+                                    "PR", //jsonMessageO.optString("federativeUnit"),//federativeUnit
+                                    99,//recepValidated
+                                    jsonMessageO.optString("password")
+                            );
+
+                    findUser = userDao.getUserByUsername(jsonMessageO.optString("username"));
+
+                    if (findUser != null) {
+                try {
+                    userDao.add(newUser);
+                    System.out.println("Usuario Cadastrado" + findUser.toString());
+                    responseMessage.put("result", true);
+                    response.put("protocol", 101);
+                    response.put("message", responseMessage);
+                } catch (Exception ex) {
+                    Logger.getLogger(ThreadCliente.class.getName()).log(Level.SEVERE, null, ex);
                 }
-                //precisa resposta do banco . para continuar
-                break;
+                    } else {
+                        System.out.println("Usuario já existe" + findUser.toString());
+                        responseMessage.put("result", false);
+                        responseMessage.put("reason", "Usuario já existe");
+                        response.put("protocol", 702);
+                        response.put("message", responseMessage);
+                    }
+                    break;
 
-            case 710:
-                System.out.println("--- 710.Consulta de Cadastro unico por nome ----> " + connection.getInetAddress().getHostName());
-                //nao entendi o documento 710 e 720
-                //criar consulta no dao
-                break;
-             case 720:
-                System.out.println("--- 720. Salvar Cadastro ----> " + connection.getInetAddress().getHostName());
-                //nao entendi o documento 710 e 720
-                //userDao.edit(user);
-                break;
-            default :
-                System.err.println("protocolo inexistente: " +  choice);
+                case 710:
+                    System.out.println("--- 710.Consulta de Cadastro unico por nome ----> " + connection.getInetAddress().getHostName());
 
-        }
-             
+                    findUser = userDao.getUserByUsername(jsonMessageO.optString("username"));
+                    if (findUser != null) {
+                        System.out.println("Usuario Encontrado" + findUser.toString());
+                        responseMessage.put("result", true);
+                        response.put("protocol", 101);
+                        response.put("message", responseMessage);
+                    } else {
+                        System.out.println("Usuario já existe" + findUser.toString());
+                        responseMessage.put("result", false);
+                        responseMessage.put("reason", "Usuario já existe");
+                        response.put("protocol", 702);
+                        response.put("message", responseMessage);
+                    }
+                    break;
+                case 720:
+                    System.out.println("--- 720. Salvar Cadastro ----> " + connection.getInetAddress().getHostName());
+                    //nao entendi o documento 710 e 720
+                    //userDao.edit(user);
+                    break;
+                default:
+                    System.err.println("protocolo inexistente: " + choice);
+
+            }
+
 //            if(message.equals("QUIT")){
 //                System.out.println("running false");
 //                running = false;
