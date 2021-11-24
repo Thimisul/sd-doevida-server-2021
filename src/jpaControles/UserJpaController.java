@@ -201,4 +201,20 @@ public class UserJpaController implements Serializable {
         }
     }
     
+        public User login(String username, String password) {
+        EntityManager em = getEntityManager();
+        try {
+            Query q = em.createNamedQuery("Usuario.login");
+            q.setParameter("name", username);
+            q.setParameter("password", password);
+           
+            System.out.println(q.getSingleResult() );
+            User userLoged =  (User) q.getSingleResult();
+            System.out.println(userLoged.getName());
+            return  userLoged;
+        } finally {
+            em.close();
+        }
+    }
+    
 }
