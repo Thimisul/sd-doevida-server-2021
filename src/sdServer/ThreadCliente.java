@@ -112,10 +112,14 @@ public class ThreadCliente extends Thread {
                 System.out.println("--- 700.Cadastro ----> " + connection.getInetAddress().getHostName());
                 jsonMessageO = (JSONObject) jsonO.opt("message");
                 User newUser = 
-                        new User(null, 
-                                jsonMessageO.optString("username"), 
-                                jsonMessageO.optString("password"),
-                        1,true, null, null);
+                        new User(null, //id
+                                jsonMessageO.optString("username"),//name 
+                                1,//Type doador
+                                null,//city
+                                null,//federativeUnit
+                                99,//recepValidated
+                                jsonMessageO.optString("password")
+                        );
                 {
                     try {
                         //userDao.add(newUser); 
