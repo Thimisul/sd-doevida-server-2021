@@ -235,4 +235,23 @@ public class UserJpaController implements Serializable {
             em.close();
         }
     }
+    
+        public User getUserByUsernameEdit(String username) throws NoResultException{
+        EntityManager em = getEntityManager();
+        try {
+            Query q = em.createNamedQuery("User.findByUsernameEdit");
+            q.setParameter("username", username);
+
+            System.out.println(q.getSingleResult());
+            User userFindEdit = (User) q.getSingleResult();
+            System.out.println(userFindEdit.getUserName() + " Encontrado ");
+            
+            
+            return userFindEdit;
+        } catch (NoResultException ex) {
+            return null;
+        } finally {
+            em.close();
+        }
+    }
 }

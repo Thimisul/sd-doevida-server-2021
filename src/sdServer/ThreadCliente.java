@@ -153,19 +153,32 @@ public class ThreadCliente extends Thread {
                 case 710:
                     System.out.println("--- 710.Consulta de Cadastro unico por nome ----> " + connection.getInetAddress().getHostName());
 
-                    findUser = userDao.getUserByUsername(jsonMessageO.optString("username"));
+                    findUser = userDao.getUserByUsernameEdit(jsonMessageO.optString("username"));
                     if (findUser != null) {
                         System.out.println("Usuario Encontrado" + findUser.toString());
+                        response.put("protocol", 711);
                         responseMessage.put("result", true);
-                        response.put("protocol", 101);
+                        responseMessage.put("name", findUser.getName());
+                        responseMessage.put("city", findUser.getCity());
+                        responseMessage.put("federative_unit", findUser.getFederativeUnit());
+                        responseMessage.put("receptor", findUser.getRecepValidated());
                         response.put("message", responseMessage);
-                    } else {
-                        System.out.println("Usuario já existe" + findUser.toString());
-                        responseMessage.put("result", false);
-                        responseMessage.put("reason", "Usuario já existe");
-                        response.put("protocol", 702);
+                        //System.out.println("threadcliente.java " + responseMessage);
+                        
+                        System.out.println("Usuario encontrado" + responseMessage);
+                        responseMessage.put("result", true);
+                        //response.put("protocol", 101);
                         response.put("message", responseMessage);
                     }
+                     else {
+                        System.out.println("Usuario não existe" + findUser.toString());
+                        responseMessage.put("result", false);
+                        responseMessage.put("reason", "Usuario já existe");
+                        response.put("protocol", 712);
+                        response.put("message", responseMessage);
+                    }
+                    System.out.println("Resposta - >>> " + response.toString());
+                    Utils.sendMessage(connection, response.toString());
                     break;
                 case 720:
                     System.out.println("--- 720. Salvar Cadastro ----> " + connection.getInetAddress().getHostName());

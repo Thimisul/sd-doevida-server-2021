@@ -30,6 +30,7 @@ import javax.persistence.Table;
     @NamedQuery(name = "User.findById", query = "SELECT u FROM User u WHERE u.id = :id"),
     @NamedQuery(name = "User.findByName", query = "SELECT u FROM User u WHERE u.name = :name"),
     @NamedQuery(name = "User.findByUsername", query = "SELECT u FROM User u WHERE u.username = :username"),
+    @NamedQuery(name = "User.findByUsernameEdit", query = "SELECT u FROM User u WHERE u.username = :username"),
     @NamedQuery(name = "User.findByUserType", query = "SELECT u FROM User u WHERE u.userType = :userType"),
     @NamedQuery(name = "User.findByCity", query = "SELECT u FROM User u WHERE u.city = :city"),
     @NamedQuery(name = "User.findByFederativeUnit", query = "SELECT u FROM User u WHERE u.federativeUnit = :federativeUnit"),

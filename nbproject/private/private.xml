@@ -3,7 +3,10 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-            <file>file:/C:/Users/thi_s/Documents/NetBeansProjects/SD2/src/sdServer/ThreadCliente.java</file>
+            <file>file:/C:/Users/lsilva/Documents/NetBeansProjects/sd-doevida-server-2021/src/entidades/User.java</file>
+            <file>file:/C:/Users/lsilva/Documents/NetBeansProjects/sd-doevida-server-2021/src/sdServer/ThreadCliente.java</file>
+            <file>file:/C:/Users/lsilva/Documents/NetBeansProjects/sd-doevida-server-2021/src/DAO/UserDAO.java</file>
+            <file>file:/C:/Users/lsilva/Documents/NetBeansProjects/sd-doevida-server-2021/src/jpaControles/UserJpaController.java</file>
         </group>
     </open-files>
 </project-private>

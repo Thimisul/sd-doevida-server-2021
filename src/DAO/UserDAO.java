@@ -19,54 +19,61 @@ import jpaControles.exceptions.NonexistentEntityException;
  * @author lsilva
  */
 public class UserDAO {
-        private final UserJpaController objetoJPA;
+
+    private final UserJpaController objetoJPA;
     private final EntityManagerFactory emf;
 
-    public UserDAO(){
-        emf=Persistence.createEntityManagerFactory("SDServerPU");
+    public UserDAO() {
+        emf = Persistence.createEntityManagerFactory("SDServerPU");
         objetoJPA = new UserJpaController(emf);
     }
-    
-    public void add(User objeto) throws Exception{
+
+    public void add(User objeto) throws Exception {
         objetoJPA.create(objeto);
     }
-    
-    public void edit(User objeto) throws Exception{
+
+    public void edit(User objeto) throws Exception {
         objetoJPA.edit(objeto);
     }
-    
-    public void remove(int id) throws NonexistentEntityException, IllegalOrphanException{
+
+    public void remove(int id) throws NonexistentEntityException, IllegalOrphanException {
         objetoJPA.destroy(id);
     }
-    
-    public List<User> geAllUsuario(){
+
+    public List<User> geAllUsuario() {
         return objetoJPA.findUserEntities();
     }
-    
-    
-    public void persist (User object){
+
+    public void persist(User object) {
         EntityManager em = emf.createEntityManager();
         em.getTransaction().begin();
-        try{
+        try {
             em.persist(object);
             em.getTransaction().commit();
-        } catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
             em.getTransaction().rollback();
-        } finally{
+        } finally {
             em.close();
         }
     }
-    
-    public User userLogin(String username, String password){
+
+    public User userLogin(String username, String password) {
         User login = objetoJPA.login(username, password);
-        System.out.println( "DAO   -    " + login);
+        System.out.println("DAO   -    " + login);
         return login;
-    }  
-    
-    public User getUserByUsername(String username){
+    }
+
+    public User getUserByUsername(String username) {
         User userFind = objetoJPA.getUserByUsername(username);
-        System.out.println( "DAO   -    " + userFind);
+        System.out.println("DAO   -    " + userFind);
         return userFind;
-    }  
+    }
+
+    public User getUserByUsernameEdit(String username) {
+        User userFindEdit = objetoJPA.getUserByUsernameEdit(username);
+        System.out.println("DAO   -    " + userFindEdit);
+        System.out.println("UserDAO" + userFindEdit);
+        return userFindEdit;
+    }
 }
