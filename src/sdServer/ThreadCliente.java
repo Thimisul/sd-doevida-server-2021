@@ -114,7 +114,6 @@ public class ThreadCliente extends Thread {
 
                 case 199: //OK
                     System.out.println(connection_info + "--- 199.Logout ---> " );
-                    running = false;
                     break;
 
                 case 700: //OK
@@ -193,6 +192,7 @@ public class ThreadCliente extends Thread {
                     userEdit.setPassword(jsonMessageO.optString("password"));
                     userEdit.setRecepValidated(jsonMessageO.optInt("receptor "));
                     
+                    System.out.println(userEdit.toString());
                 {
                     try {
                         userDao.edit(userEdit);
