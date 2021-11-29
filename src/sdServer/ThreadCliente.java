@@ -9,6 +9,7 @@ import DAO.UserDAO;
 import entidades.User;
 import java.io.IOException;
 import java.net.Socket;
+import java.util.Locale;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -87,20 +88,21 @@ public class ThreadCliente extends Thread {
 
             switch (choice) {
                 case 100: //OK
-                    System.out.println("--- 100.Login ----> " + connection.getInetAddress().getHostName());
+                    System.out.println(connection_info + " --- acessou --- 100.Login ----> " );
                     jsonMessageO = (JSONObject) jsonO.opt("message");
                     String username = (String) jsonMessageO.opt("username");
                     String password = (String) jsonMessageO.opt("password");
                     User user = userDao.userLogin(username, password);
                     
                     if (user == null) {
-                        System.out.println("Username ou password incorretos" + user.toString());
+                        System.out.println("Username ou password incorretos");
                         responseMessage.put("result", false);
                         responseMessage.put("reason", "Login Falhou");
                         response.put("protocol", 102);
                         response.put("message", responseMessage);
                     } else {
-                        System.out.println("Usuario encontrado" + user.toString());
+                        connection_info.concat(" -- " + user.getUserName());
+                        System.out.println("Usuario encontrado" + connection_info);
                         responseMessage.put("result", true);
                         response.put("protocol", 101);
                         response.put("message", responseMessage);
@@ -111,12 +113,12 @@ public class ThreadCliente extends Thread {
                     break;
 
                 case 199: //OK
-                    System.out.println("--- 199.Logout ---> " + connection.getInetAddress().getHostName());
+                    System.out.println(connection_info + "--- 199.Logout ---> " );
                     running = false;
                     break;
 
                 case 700: //OK
-                    System.out.println("--- 700.Cadastro ----> " + connection.getInetAddress().getHostName());
+                    System.out.println(connection_info + "--- 700.Cadastro ----> ");
                     jsonMessageO = (JSONObject) jsonO.opt("message");
                     newUser
                             = new User(null, //id
@@ -151,8 +153,7 @@ public class ThreadCliente extends Thread {
                     break;
 
                 case 710:
-                    System.out.println("--- 710.Consulta de Cadastro unico por nome ----> " + connection.getInetAddress().getHostName());
-
+                    System.out.println(connection_info + "--- 710.Consulta de Cadastro unico por nome ----> ");
                     findUser = userDao.getUserByUsernameEdit(jsonMessageO.optString("username"));
                     if (findUser != null) {
                         System.out.println("Usuario Encontrado" + findUser.toString());
@@ -181,10 +182,32 @@ public class ThreadCliente extends Thread {
                     Utils.sendMessage(connection, response.toString());
                     break;
                 case 720:
-                    System.out.println("--- 720. Salvar Cadastro ----> " + connection.getInetAddress().getHostName());
-                    //nao entendi o documento 710 e 720
-                    //userDao.edit(user);
+                    System.out.println(connection_info + "--- 720. Salvar atualizaçao do Cadastro ----> " );
+                    jsonMessageO = null;
+                    jsonMessageO = (JSONObject) jsonO.opt("message");
+                    
+                    User userEdit = new User();
+                    userEdit.setName(jsonMessageO.optString("name"));
+                    userEdit.setCity(jsonMessageO.optString("city"));
+                    userEdit.setFederativeUnit( jsonMessageO.optString("state").toUpperCase().substring(0,2));
+                    userEdit.setPassword(jsonMessageO.optString("password"));
+                    userEdit.setRecepValidated(jsonMessageO.optInt("receptor "));
+                    
+                {
+                    try {
+                        userDao.edit(userEdit);
+                        response.put("protocol", 721);
+                        responseMessage.put("result", true);
+                        response.put("message", responseMessage);
+                    } catch (Exception ex) {
+                        response.put("protocol", 722);
+                        responseMessage.put("result", false);
+                        responseMessage.put("reason", ex.toString());
+                        response.put("message", responseMessage);
+                    }
+                }
                     break;
+
                 default:
                     System.err.println("protocolo inexistente: " + choice);
 
