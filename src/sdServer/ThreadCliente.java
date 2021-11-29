@@ -73,7 +73,7 @@ public class ThreadCliente extends Thread {
         User findUser;
         User newUser;
         JSONObject jsonMessageO = null;
-        JSONObject response = new JSONObject();
+        JSONObject response;
         JSONObject responseMessage = new JSONObject();
         while (running) {
 //            try{
@@ -86,6 +86,7 @@ public class ThreadCliente extends Thread {
 
             switch (choice) {
                 case 100: //OK
+                    response = new JSONObject();
                     System.out.println(Utils.ANSI_GREEN + connection_info + Utils.ANSI_CYAN + " #100    LOGIN ----> " + Utils.ANSI_RESET);
                     jsonMessageO = (JSONObject) jsonO.opt("message");
                     try {
@@ -108,6 +109,7 @@ public class ThreadCliente extends Thread {
                     break;
 
                 case 199: //OK
+                    response = new JSONObject();
                     System.out.println(Utils.ANSI_GREEN + connection_info + Utils.ANSI_CYAN + " #100    LOGOUT ----> " + Utils.ANSI_RESET);
                     System.out.println(Utils.ANSI_GREEN + connection_info + Utils.ANSI_RESET + " fez Logout");
                     connectedUSer = null;
@@ -115,6 +117,7 @@ public class ThreadCliente extends Thread {
                     break;
 
                 case 700: //OK
+                    response = new JSONObject();
                     System.out.println(Utils.ANSI_GREEN + connection_info + Utils.ANSI_CYAN + " #100    CADASTRO ----> ");
                     jsonMessageO = (JSONObject) jsonO.opt("message");
                     newUser
@@ -133,7 +136,7 @@ public class ThreadCliente extends Thread {
                     if (findUser == null) {
                         try {
                             userDao.add(newUser);
-                            System.out.println(Utils.ANSI_YELLOW + "SERVIDOR: " + Utils.ANSI_GREEN + "Usuario" + newUser.getUserName()+ "Cadastrado " + Utils.ANSI_RESET );
+                            System.out.println(Utils.ANSI_YELLOW + "SERVIDOR: " + Utils.ANSI_GREEN + "Usuario" + newUser.getUserName() + "Cadastrado " + Utils.ANSI_RESET);
                             responseMessage.put("result", true);
                             response.put("protocol", 701);
                             response.put("message", responseMessage);
@@ -143,20 +146,23 @@ public class ThreadCliente extends Thread {
                             Logger.getLogger(ThreadCliente.class.getName()).log(Level.SEVERE, null, ex);
                         }
                     } else {
-                        System.err.println("SERVIDOR: Usuario já existe" + findUser.getName());
+                        System.err.println(Utils.ANSI_YELLOW + "SERVIDOR: " + Utils.ANSI_GREEN + "Usuario já existe: " + findUser.getName());
                         responseMessage.put("result", false);
                         responseMessage.put("reason", "Usuario já existe");
                         response.put("protocol", 702);
                         response.put("message", responseMessage);
+                        System.out.print(Utils.ANSI_YELLOW + "SERVIDOR enviou - >>> " + Utils.ANSI_RESET);
                         Utils.sendMessage(connection, response.toString());
                     }
                     break;
 
                 case 710:
-                    System.out.println(connection_info + "--- 710.Consulta de Cadastro unico por nome ----> ");
+                    response = new JSONObject();
+                    System.out.println(Utils.ANSI_GREEN + connection_info + Utils.ANSI_CYAN + " #710    CONSULTA DE CADASTRO UNICO POR NOME ----> ");
+                    findUser = new User();
                     findUser = userDao.getUserByUsernameEdit(jsonMessageO.optString("username"));
                     if (findUser != null) {
-                        System.out.println("Usuario Encontrado" + findUser.toString());
+                        System.out.println(Utils.ANSI_YELLOW + "SERVIDOR: " + Utils.ANSI_GREEN + "Usuario Encontrado " + findUser.toString() + Utils.ANSI_RESET);
                         response.put("protocol", 711);
                         responseMessage.put("result", true);
                         responseMessage.put("name", findUser.getName());
@@ -164,31 +170,25 @@ public class ThreadCliente extends Thread {
                         responseMessage.put("state", findUser.getFederativeUnit());
                         responseMessage.put("receptor", findUser.getRecepValidated());
                         response.put("message", responseMessage);
-                        //System.out.println("threadcliente.java " + responseMessage);
-
-                        System.out.println("Usuario encontrado" + responseMessage);
-                        responseMessage.put("result", true);
-                        //response.put("protocol", 101);
-                        response.put("message", responseMessage);
                     } else {
-                        System.out.println("Usuario não existe" + findUser.toString());
+                        System.err.println(Utils.ANSI_YELLOW + "SERVIDOR: " + Utils.ANSI_RESET + "Usuario não encontrado ");
                         responseMessage.put("result", false);
-                        responseMessage.put("reason", "Usuario já existe");
+                        responseMessage.put("reason", "Usuario não encontrado");
                         response.put("protocol", 712);
                         response.put("message", responseMessage);
                     }
-                    System.out.println("Resposta - >>> " + response.toString());
+                    System.out.print(Utils.ANSI_YELLOW + "SERVIDOR enviou - >>> " + Utils.ANSI_RESET);
                     Utils.sendMessage(connection, response.toString());
                     break;
                 case 720:
-                    System.out.println(connection_info + "--- 720. Salvar atualizaçao do Cadastro ----> ");
+                    response = new JSONObject();
+                    System.out.println(Utils.ANSI_GREEN + connection_info + Utils.ANSI_CYAN + " #720    SALVAR ATUALIZAÇÕES DO CADASTRO ----> ");
                     jsonMessageO = null;
                     jsonMessageO = (JSONObject) jsonO.opt("message");
 
                     User userEdit = new User();
                     userEdit.setId(connectedUSer.getId());
                     userEdit.setUserName(connectedUSer.getUserName());
-                    userEdit.setRecepValidated(connectedUSer.getRecepValidated());
                     userEdit.setName(jsonMessageO.optString("name"));
                     userEdit.setCity(jsonMessageO.optString("city"));
                     userEdit.setFederativeUnit(jsonMessageO.optString("state").toUpperCase().substring(0, 2));
@@ -196,6 +196,7 @@ public class ThreadCliente extends Thread {
                     userEdit.setRecepValidated(jsonMessageO.optInt("receptor "));
                      {
                         try {
+                            
                             System.out.println("Id usuario para edição: " + userEdit.getId());
                             userDao.editUser(userEdit);
                             response.put("protocol", 721);

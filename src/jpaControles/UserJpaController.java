@@ -230,10 +230,7 @@ public class UserJpaController implements Serializable {
         try {
             Query q = em.createNamedQuery("User.findByUsername");
             q.setParameter("username", username);
-
-            System.out.println(q.getSingleResult());
             User userFind = (User) q.getSingleResult();
-            System.out.println(userFind + " Encontrado ");
             return userFind;
         } catch (NoResultException ex) {
             return null;

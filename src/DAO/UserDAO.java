@@ -70,7 +70,6 @@ public class UserDAO {
 
     public User getUserByUsername(String username) {
         User userFind = objetoJPA.getUserByUsername(username);
-        System.out.println("DAO   -    " + userFind);
         return userFind;
     }
 
