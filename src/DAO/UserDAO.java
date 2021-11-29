@@ -9,6 +9,7 @@ import entidades.User;
 import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
+import javax.persistence.NoResultException;
 import javax.persistence.Persistence;
 import jpaControles.UserJpaController;
 import jpaControles.exceptions.IllegalOrphanException;
@@ -62,9 +63,8 @@ public class UserDAO {
         }
     }
 
-    public User userLogin(String username, String password) {
+    public User userLogin(String username, String password) throws NoResultException{
         User login = objetoJPA.login(username, password);
-        System.out.println("DAO   -    " + login);
         return login;
     }
 

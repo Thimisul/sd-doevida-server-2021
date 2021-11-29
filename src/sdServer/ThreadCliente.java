@@ -7,11 +7,10 @@ package sdServer;
 
 import DAO.UserDAO;
 import entidades.User;
-import java.io.IOException;
 import java.net.Socket;
-import java.net.SocketException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.persistence.NoResultException;
 import org.json.JSONObject;
 import utils.Utils;
 
@@ -67,7 +66,7 @@ public class ThreadCliente extends Thread {
 //        }
 //    }
     public void run() {
-        System.out.println("Thread Iniciada");
+        System.out.println(Utils.ANSI_GREEN + connection_info + Utils.ANSI_RESET + "Thread Iniciada -- ");
         running = true;
         String messageJson = "";
         User connectedUSer = new User();
@@ -78,47 +77,44 @@ public class ThreadCliente extends Thread {
         JSONObject responseMessage = new JSONObject();
         while (running) {
 //            try{
+            System.out.println( " Servidor aguardando requisição do cliente: " + Utils.ANSI_GREEN + connection_info + Utils.ANSI_RESET);
             messageJson = Utils.receiveMessage(connection);
-            System.out.println("mensagem recebida -> " + messageJson);
             JSONObject jsonO = new JSONObject(messageJson);
-            System.out.println("mensagem json -> " + jsonO.toString());
             int choice = (Integer) jsonO.opt("protocol");
-            System.out.println("A Escolha foi = protocolo:  " + choice);
-
-            UserDAO userDao = new UserDAO(); //precisa resposta do banco . para continuar
+            System.out.println(Utils.ANSI_GREEN + connection_info + Utils.ANSI_RESET + " enviou --> "  + messageJson);
+            UserDAO userDao = new UserDAO(); 
 
             switch (choice) {
                 case 100: //OK
-                    System.out.println(connection_info + " --- acessou --- 100.Login ----> ");
+                    System.out.println(Utils.ANSI_GREEN + connection_info + Utils.ANSI_RESET +" #100#--LOGIN ----> ");
                     jsonMessageO = (JSONObject) jsonO.opt("message");
                     String username = (String) jsonMessageO.opt("username");
                     String password = (String) jsonMessageO.opt("password");
+                    try{
                     connectedUSer = userDao.userLogin(username, password);
-
-                    if (connectedUSer == null) {
-                        System.out.println("Username ou password incorretos");
+                    connection_info = connection_info.concat(" -- " + connectedUSer.getUserName());
+                        System.out.println("Usuario Conectado: " + Utils.ANSI_GREEN + connection_info + Utils.ANSI_RESET);
+                        responseMessage.put("result", true);
+                        response.put("protocol", 101);
+                        response.put("message", responseMessage);
+                    }catch(NoResultException e){
+                        System.err.println("Username ou password incorretos");
                         responseMessage.put("result", false);
                         responseMessage.put("reason", "Login Falhou");
                         response.put("protocol", 102);
                         response.put("message", responseMessage);
-                    } else {
-                        connection_info.concat(" -- " + connectedUSer.getUserName());
-                        System.out.println("Usuario encontrado" + connection_info);
-                        responseMessage.put("result", true);
-                        response.put("protocol", 101);
-                        response.put("message", responseMessage);
-                    }
-
-                    System.out.println("Resposta - >>> " + response.toString());
+                    } finally {
                     Utils.sendMessage(connection, response.toString());
+                    System.out.println(Utils.ANSI_YELLOW + "Servidor enviou - >>> " + Utils.ANSI_RESET + response.toString());
+                    }
                     break;
 
                 case 199: //OK
-                    System.out.println(connection_info + "--- 199.Logout ---> ");
+                    System.out.println(Utils.ANSI_GREEN + connection_info + Utils.ANSI_RESET +" #100#--LOGOUT ----> ");
                     break;
 
                 case 700: //OK
-                    System.out.println(connection_info + "--- 700.Cadastro ----> ");
+                    System.out.println(Utils.ANSI_GREEN + connection_info + Utils.ANSI_RESET +" #100#--CADASTRO ----> ");
                     jsonMessageO = (JSONObject) jsonO.opt("message");
                     newUser
                             = new User(null, //id

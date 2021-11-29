@@ -31,13 +31,13 @@ public class SDServer {
         try {
             System.out.println("Incializando o servidor...");
             server = new ServerSocket(PORT);
-            System.out.println("Servidor iniciado, ouvindo a porta " + PORT);
+            System.out.println("Servidor iniciado, ouvindo a porta " + Utils.ANSI_PURPLE + PORT + Utils.ANSI_RESET);
             //Aguarda conexões
             while (true) {
                 Socket connection = server.accept();
-                System.out.println("Conexao aceita");
-                //connection_info = Utils.receiveMessage(connection);
-                connection_info  = "0";
+                connection_info  = connection.getInetAddress().getHostName();
+                System.out.println(Utils.ANSI_GREEN + connection_info + " Conectado" + Utils.ANSI_RESET);
+                //connection_info = Utils.receiveMessage(connection);              
                 ThreadCliente cl = new ThreadCliente(connection_info, connection, this);
                 clients.put(connection_info, cl);
                 //Utils.sendMessage(connection, "Sucess");             
