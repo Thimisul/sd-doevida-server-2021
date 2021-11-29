@@ -35,6 +35,10 @@ public class UserDAO {
     public void edit(User objeto) throws Exception {
         objetoJPA.edit(objeto);
     }
+    
+    public void editUser(User objeto) throws Exception {
+        objetoJPA.editUser(objeto);
+    }
 
     public void remove(int id) throws NonexistentEntityException, IllegalOrphanException {
         objetoJPA.destroy(id);

@@ -123,6 +123,29 @@ public class UserJpaController implements Serializable {
             }
         }
     }
+    
+    public void editUser(User user) throws IllegalOrphanException, NonexistentEntityException, Exception {
+        EntityManager em = null;
+        try {
+            em = getEntityManager();
+            em.getTransaction().begin();
+            user = em.merge(user);
+            em.getTransaction().commit();
+        } catch (Exception ex) {
+            String msg = ex.getLocalizedMessage();
+            if (msg == null || msg.length() == 0) {
+                Integer id = user.getId();
+                if (findUser(id) == null) {
+                    throw new NonexistentEntityException("The user with id " + id + " no longer exists.");
+                }
+            }
+            throw ex;
+        } finally {
+            if (em != null) {
+                em.close();
+            }
+        }
+    }
 
     public void destroy(Integer id) throws IllegalOrphanException, NonexistentEntityException {
         EntityManager em = null;

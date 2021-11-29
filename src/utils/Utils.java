@@ -9,6 +9,7 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
+import java.net.SocketException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -33,7 +34,7 @@ public class Utils {
     }
 
     public static String receiveMessage(Socket connection) {
-        
+
         String response = null;
 
         try {
@@ -43,7 +44,7 @@ public class Utils {
             Logger.getLogger(Utils.class.getName()).log(Level.SEVERE, null, ex);
         } catch (ClassNotFoundException ex) {
             Logger.getLogger(Utils.class.getName()).log(Level.SEVERE, null, ex);
-        }   
+        }
         return response;
     }
 }

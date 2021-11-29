@@ -9,8 +9,7 @@ import DAO.UserDAO;
 import entidades.User;
 import java.io.IOException;
 import java.net.Socket;
-import java.util.Locale;
-import java.util.Map;
+import java.net.SocketException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.json.JSONObject;
@@ -71,37 +70,39 @@ public class ThreadCliente extends Thread {
         System.out.println("Thread Iniciada");
         running = true;
         String messageJson = "";
+        User connectedUSer = new User();
         User findUser;
         User newUser;
         JSONObject jsonMessageO = null;
         JSONObject response = new JSONObject();
         JSONObject responseMessage = new JSONObject();
         while (running) {
+//            try{
             messageJson = Utils.receiveMessage(connection);
             System.out.println("mensagem recebida -> " + messageJson);
             JSONObject jsonO = new JSONObject(messageJson);
             System.out.println("mensagem json -> " + jsonO.toString());
             int choice = (Integer) jsonO.opt("protocol");
             System.out.println("A Escolha foi = protocolo:  " + choice);
-            
+
             UserDAO userDao = new UserDAO(); //precisa resposta do banco . para continuar
 
             switch (choice) {
                 case 100: //OK
-                    System.out.println(connection_info + " --- acessou --- 100.Login ----> " );
+                    System.out.println(connection_info + " --- acessou --- 100.Login ----> ");
                     jsonMessageO = (JSONObject) jsonO.opt("message");
                     String username = (String) jsonMessageO.opt("username");
                     String password = (String) jsonMessageO.opt("password");
-                    User user = userDao.userLogin(username, password);
-                    
-                    if (user == null) {
+                    connectedUSer = userDao.userLogin(username, password);
+
+                    if (connectedUSer == null) {
                         System.out.println("Username ou password incorretos");
                         responseMessage.put("result", false);
                         responseMessage.put("reason", "Login Falhou");
                         response.put("protocol", 102);
                         response.put("message", responseMessage);
                     } else {
-                        connection_info.concat(" -- " + user.getUserName());
+                        connection_info.concat(" -- " + connectedUSer.getUserName());
                         System.out.println("Usuario encontrado" + connection_info);
                         responseMessage.put("result", true);
                         response.put("protocol", 101);
@@ -113,7 +114,7 @@ public class ThreadCliente extends Thread {
                     break;
 
                 case 199: //OK
-                    System.out.println(connection_info + "--- 199.Logout ---> " );
+                    System.out.println(connection_info + "--- 199.Logout ---> ");
                     break;
 
                 case 700: //OK
@@ -124,8 +125,8 @@ public class ThreadCliente extends Thread {
                                     jsonMessageO.optString("name"),//name
                                     jsonMessageO.optString("username"), //username
                                     1,//Type doador
-                                    "PG", //jsonMessageO.optString("city"),//city
-                                    "PR", //jsonMessageO.optString("federativeUnit"),//federativeUnit
+                                    "Ponta Grossa",//jsonMessageO.optString("city"),
+                                    "pr",//jsonMessageO.optString("federativeUnit"),//federativeUnit
                                     99,//recepValidated
                                     jsonMessageO.optString("password")
                             );
@@ -133,17 +134,17 @@ public class ThreadCliente extends Thread {
                     findUser = userDao.getUserByUsername(jsonMessageO.optString("username"));
 
                     if (findUser == null) {
-                try {
-                    userDao.add(newUser);
-                    System.out.println("Usuario Cadastrado" + findUser);
-                    responseMessage.put("result", true);
-                    response.put("protocol", 101);
-                    response.put("message", responseMessage);
-                } catch (Exception ex) {
-                    Logger.getLogger(ThreadCliente.class.getName()).log(Level.SEVERE, null, ex);
-                }
+                        try {
+                            userDao.add(newUser);
+                            System.out.println("Usuario Cadastrado");
+                            responseMessage.put("result", true);
+                            response.put("protocol", 101);
+                            response.put("message", responseMessage);
+                        } catch (Exception ex) {
+                            Logger.getLogger(ThreadCliente.class.getName()).log(Level.SEVERE, null, ex);
+                        }
                     } else {
-                        System.out.println("Usuario já existe" + findUser);
+                        System.out.println("Usuario já existe" + findUser.getName());
                         responseMessage.put("result", false);
                         responseMessage.put("reason", "Usuario já existe");
                         response.put("protocol", 702);
@@ -164,13 +165,12 @@ public class ThreadCliente extends Thread {
                         responseMessage.put("receptor", findUser.getRecepValidated());
                         response.put("message", responseMessage);
                         //System.out.println("threadcliente.java " + responseMessage);
-                        
+
                         System.out.println("Usuario encontrado" + responseMessage);
                         responseMessage.put("result", true);
                         //response.put("protocol", 101);
                         response.put("message", responseMessage);
-                    }
-                     else {
+                    } else {
                         System.out.println("Usuario não existe" + findUser.toString());
                         responseMessage.put("result", false);
                         responseMessage.put("reason", "Usuario já existe");
@@ -181,31 +181,36 @@ public class ThreadCliente extends Thread {
                     Utils.sendMessage(connection, response.toString());
                     break;
                 case 720:
-                    System.out.println(connection_info + "--- 720. Salvar atualizaçao do Cadastro ----> " );
+                    System.out.println(connection_info + "--- 720. Salvar atualizaçao do Cadastro ----> ");
                     jsonMessageO = null;
                     jsonMessageO = (JSONObject) jsonO.opt("message");
-                    
+
                     User userEdit = new User();
+                    userEdit.setId(connectedUSer.getId());
+                    userEdit.setUserName(connectedUSer.getUserName());
+                    userEdit.setRecepValidated(connectedUSer.getRecepValidated());
                     userEdit.setName(jsonMessageO.optString("name"));
                     userEdit.setCity(jsonMessageO.optString("city"));
-                    userEdit.setFederativeUnit( jsonMessageO.optString("state").toUpperCase().substring(0,2));
+                    userEdit.setFederativeUnit(jsonMessageO.optString("state").toUpperCase().substring(0, 2));
                     userEdit.setPassword(jsonMessageO.optString("password"));
                     userEdit.setRecepValidated(jsonMessageO.optInt("receptor "));
-                    
-                    System.out.println(userEdit.toString());
-                {
-                    try {
-                        userDao.edit(userEdit);
-                        response.put("protocol", 721);
-                        responseMessage.put("result", true);
-                        response.put("message", responseMessage);
-                    } catch (Exception ex) {
-                        response.put("protocol", 722);
-                        responseMessage.put("result", false);
-                        responseMessage.put("reason", ex.toString());
-                        response.put("message", responseMessage);
+                     {
+                        try {
+                            System.out.println("Id usuario para edição: " + userEdit.getId());
+                            userDao.editUser(userEdit);
+                            response.put("protocol", 721);
+                            responseMessage.put("result", true);
+                            response.put("message", responseMessage);
+                            utils.Utils.sendMessage(connection, response.toString());
+                        } catch (Exception ex) {
+                            System.err.println(ex);
+                            response.put("protocol", 722);
+                            responseMessage.put("result", false);
+                            responseMessage.put("reason", ex.toString());
+                            response.put("message", responseMessage);
+                            utils.Utils.sendMessage(connection, response.toString());
+                        }
                     }
-                }
                     break;
 
                 default:
@@ -226,11 +231,9 @@ public class ThreadCliente extends Thread {
 //            } else {
 //                System.out.println(connection.getRemoteSocketAddress() + " Enviou: " + message);
 //            }  
-        }
-        try {
-            connection.close();
-        } catch (IOException ex) {
-            Logger.getLogger(ThreadCliente.class.getName()).log(Level.SEVERE, null, ex);
+//        } catch ( SocketException ex){
+//                System.out.println("Conexão perdida com o Cliente: " + connection_info);
+//        }
         }
     }
 }
