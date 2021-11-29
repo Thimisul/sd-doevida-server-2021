@@ -248,8 +248,6 @@ public class UserJpaController implements Serializable {
             Query q = em.createNamedQuery("User.login");
             q.setParameter("username", username);
             q.setParameter("password", password);
-
-            System.out.println(q.getSingleResult());
             User userLoged = (User) q.getSingleResult();
             return userLoged;
         } finally {
