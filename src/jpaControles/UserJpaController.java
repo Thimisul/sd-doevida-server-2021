@@ -251,8 +251,6 @@ public class UserJpaController implements Serializable {
 
             System.out.println(q.getSingleResult());
             User userLoged = (User) q.getSingleResult();
-            System.out.println(userLoged + " Logado ");
-            System.out.println(userLoged);
             return userLoged;
         } finally {
             em.close();

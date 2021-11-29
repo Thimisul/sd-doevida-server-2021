@@ -34,7 +34,7 @@ public class Utils {
             ObjectOutputStream output = new ObjectOutputStream(connection.getOutputStream());
             output.flush();
             output.writeObject(message);
-            System.out.println("Mensagem enviada: " + message);
+            System.out.println(message);
             output.flush();
             return true;
         } catch (IOException ex) {
