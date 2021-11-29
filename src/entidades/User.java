@@ -104,7 +104,7 @@ public class User implements Serializable {
     }
     
         public String getUserName() {
-        return name;
+        return username;
     }
 
     public void setUserName(String username) {

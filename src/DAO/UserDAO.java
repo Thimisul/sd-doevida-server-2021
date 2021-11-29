@@ -75,8 +75,6 @@ public class UserDAO {
 
     public User getUserByUsernameEdit(String username) {
         User userFindEdit = objetoJPA.getUserByUsernameEdit(username);
-        System.out.println("DAO   -    " + userFindEdit);
-        System.out.println("UserDAO" + userFindEdit);
         return userFindEdit;
     }
 }

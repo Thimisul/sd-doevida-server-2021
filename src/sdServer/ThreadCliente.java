@@ -74,12 +74,13 @@ public class ThreadCliente extends Thread {
         User newUser;
         JSONObject jsonMessageO = null;
         JSONObject response;
+        JSONObject jsonO;
         JSONObject responseMessage = new JSONObject();
         while (running) {
 //            try{
             System.out.println(Utils.ANSI_YELLOW + "SERVIDOR: aguardando requisição do cliente: " + Utils.ANSI_GREEN + connection_info + Utils.ANSI_RESET);
             messageJson = Utils.receiveMessage(connection);
-            JSONObject jsonO = new JSONObject(messageJson);
+            jsonO = new JSONObject(messageJson);
             int choice = (Integer) jsonO.opt("protocol");
             System.out.println(Utils.ANSI_GREEN + connection_info + " enviou - >>> " + Utils.ANSI_RESET + messageJson);
             UserDAO userDao = new UserDAO();
@@ -87,6 +88,7 @@ public class ThreadCliente extends Thread {
             switch (choice) {
                 case 100: //OK
                     response = new JSONObject();
+                    jsonMessageO = new JSONObject();
                     System.out.println(Utils.ANSI_GREEN + connection_info + Utils.ANSI_CYAN + " #100    LOGIN ----> " + Utils.ANSI_RESET);
                     jsonMessageO = (JSONObject) jsonO.opt("message");
                     try {
@@ -118,12 +120,13 @@ public class ThreadCliente extends Thread {
 
                 case 700: //OK
                     response = new JSONObject();
+                    jsonMessageO = new JSONObject();
                     System.out.println(Utils.ANSI_GREEN + connection_info + Utils.ANSI_CYAN + " #100    CADASTRO ----> ");
                     jsonMessageO = (JSONObject) jsonO.opt("message");
                     newUser
                             = new User(null, //id
-                                    jsonMessageO.optString("name"),//name
-                                    jsonMessageO.optString("username"), //username
+                                    jsonMessageO.getString("name"),//name
+                                    jsonMessageO.getString("username"), //username
                                     1,//Type doador
                                     jsonMessageO.optString("city"),
                                     jsonMessageO.optString("state"),//federativeUnit
@@ -136,7 +139,7 @@ public class ThreadCliente extends Thread {
                     if (findUser == null) {
                         try {
                             userDao.add(newUser);
-                            System.out.println(Utils.ANSI_YELLOW + "SERVIDOR: " + Utils.ANSI_GREEN + "Usuario" + newUser.getUserName() + "Cadastrado " + Utils.ANSI_RESET);
+                            System.out.println(Utils.ANSI_YELLOW + "SERVIDOR: " + Utils.ANSI_GREEN + " Usuario " + newUser.getUserName()+ "Cadastrado " + Utils.ANSI_RESET);
                             responseMessage.put("result", true);
                             response.put("protocol", 701);
                             response.put("message", responseMessage);
@@ -146,7 +149,7 @@ public class ThreadCliente extends Thread {
                             Logger.getLogger(ThreadCliente.class.getName()).log(Level.SEVERE, null, ex);
                         }
                     } else {
-                        System.err.println(Utils.ANSI_YELLOW + "SERVIDOR: " + Utils.ANSI_GREEN + "Usuario já existe: " + findUser.getName());
+                        System.err.println(Utils.ANSI_YELLOW + "SERVIDOR: " + Utils.ANSI_GREEN + "Usuario já existe: " + findUser.getUserName());
                         responseMessage.put("result", false);
                         responseMessage.put("reason", "Usuario já existe");
                         response.put("protocol", 702);
@@ -158,6 +161,8 @@ public class ThreadCliente extends Thread {
 
                 case 710:
                     response = new JSONObject();
+                    jsonMessageO = new JSONObject();
+                    jsonMessageO = (JSONObject) jsonO.opt("message");
                     System.out.println(Utils.ANSI_GREEN + connection_info + Utils.ANSI_CYAN + " #710    CONSULTA DE CADASTRO UNICO POR NOME ----> ");
                     findUser = new User();
                     findUser = userDao.getUserByUsernameEdit(jsonMessageO.optString("username"));
@@ -180,12 +185,14 @@ public class ThreadCliente extends Thread {
                     System.out.print(Utils.ANSI_YELLOW + "SERVIDOR enviou - >>> " + Utils.ANSI_RESET);
                     Utils.sendMessage(connection, response.toString());
                     break;
+                    
                 case 720:
                     response = new JSONObject();
                     System.out.println(Utils.ANSI_GREEN + connection_info + Utils.ANSI_CYAN + " #720    SALVAR ATUALIZAÇÕES DO CADASTRO ----> ");
-                    jsonMessageO = null;
+                    jsonMessageO = new JSONObject();
+                    responseMessage = new JSONObject();
                     jsonMessageO = (JSONObject) jsonO.opt("message");
-
+                    System.out.println("Teste -------- " + jsonMessageO.optString("name"));
                     User userEdit = new User();
                     userEdit.setId(connectedUSer.getId());
                     userEdit.setUserName(connectedUSer.getUserName());
@@ -202,13 +209,14 @@ public class ThreadCliente extends Thread {
                             response.put("protocol", 721);
                             responseMessage.put("result", true);
                             response.put("message", responseMessage);
-                            utils.Utils.sendMessage(connection, response.toString());
                         } catch (Exception ex) {
                             System.err.println(ex);
                             response.put("protocol", 722);
                             responseMessage.put("result", false);
                             responseMessage.put("reason", ex.toString());
                             response.put("message", responseMessage);
+                        } finally {
+                            
                             utils.Utils.sendMessage(connection, response.toString());
                         }
                     }
