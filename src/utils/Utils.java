@@ -21,6 +21,8 @@ import java.util.logging.Logger;
  */
 public class Utils {
 
+    public static String federativeUnit[] = {"AC", "AL", "AP", "AM", "BA", "CE", "DF", "ES", "GO", "MA", "MT", "MS", "MG", "PA", "PB", "PR", "PE", "PI", "RJ", "RN", "RS", "RO", "RR", "SC", "SP", "SE", "TO"};
+
     public static final String ANSI_RESET = "\u001B[0m";
     public static final String ANSI_BLACK = "\u001B[30m";
     public static final String ANSI_RED = "\u001B[31m";
@@ -31,11 +33,11 @@ public class Utils {
     public static final String ANSI_CYAN = "\u001B[36m";
     public static final String ANSI_WHITE = "\u001B[37m";
 
-public static boolean sendMessage(Socket connection, String message) {
+    public static boolean sendMessage(Socket connection, String message) {
         try {
             DataOutputStream output = new DataOutputStream(connection.getOutputStream());
             output.flush();
-            output.write((message +"\n").getBytes("UTF-8"));
+            output.write((message + "\n").getBytes("UTF-8"));
             output.flush();
             System.out.println("Mensagem enviada: " + message);
             output.flush();
@@ -47,17 +49,17 @@ public static boolean sendMessage(Socket connection, String message) {
     }
 
     public static String receiveMessage(Socket connection) {
-        
+
         String response = null;
 
         try {
             DataInputStream input = new DataInputStream(connection.getInputStream());
-            response = input.readUTF();
+            response = input.readLine();
         } catch (IOException ex) {
             Logger.getLogger(Utils.class.getName()).log(Level.SEVERE, null, ex);
 //        } catch (ClassNotFoundException ex) {
 //            Logger.getLogger(Utils.class.getName()).log(Level.SEVERE, null, ex);
-        }   
+        }
         return response;
     }
 }
