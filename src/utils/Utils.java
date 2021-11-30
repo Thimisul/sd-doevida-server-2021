@@ -5,6 +5,8 @@
  */
 package utils;
 
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
@@ -18,7 +20,7 @@ import java.util.logging.Logger;
  * @author thi_s
  */
 public class Utils {
-    
+
     public static final String ANSI_RESET = "\u001B[0m";
     public static final String ANSI_BLACK = "\u001B[30m";
     public static final String ANSI_RED = "\u001B[31m";
@@ -29,12 +31,13 @@ public class Utils {
     public static final String ANSI_CYAN = "\u001B[36m";
     public static final String ANSI_WHITE = "\u001B[37m";
 
-    public static boolean sendMessage(Socket connection, String message) {
+public static boolean sendMessage(Socket connection, String message) {
         try {
-            ObjectOutputStream output = new ObjectOutputStream(connection.getOutputStream());
+            DataOutputStream output = new DataOutputStream(connection.getOutputStream());
             output.flush();
-            output.writeObject(message);
-            System.out.println(message);
+            output.write((message +"\n").getBytes("UTF-8"));
+            output.flush();
+            System.out.println("Mensagem enviada: " + message);
             output.flush();
             return true;
         } catch (IOException ex) {
@@ -44,17 +47,31 @@ public class Utils {
     }
 
     public static String receiveMessage(Socket connection) {
-
+        
         String response = null;
 
         try {
-            ObjectInputStream input = new ObjectInputStream(connection.getInputStream());
-            response = (String) input.readObject();
+            DataInputStream input = new DataInputStream(connection.getInputStream());
+            response = input.readLine();
         } catch (IOException ex) {
             Logger.getLogger(Utils.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (ClassNotFoundException ex) {
-            Logger.getLogger(Utils.class.getName()).log(Level.SEVERE, null, ex);
-        }
+//        } catch (ClassNotFoundException ex) {
+//            Logger.getLogger(Utils.class.getName()).log(Level.SEVERE, null, ex);
+        }   
         return response;
     }
 }
+
+//    private static String toAscii(final String hexInput) {
+//        final int length = hexInput.length();
+//        final StringBuilder ascii = new StringBuilder();
+//        final StringBuilder integers = new StringBuilder();
+//        for (int i = 0; i < length; i += 2) {
+//            final String twoDigitHex = hexInput.substring(i, i + 2);
+//            final int integer = Integer.parseInt(twoDigitHex, 16);
+//            ascii.append((char) integer);
+//            integers.append(String.format("%03d", integer)).append(" ");
+//        }
+//        return hexInput + " ==> " + integers.deleteCharAt(integers.length() - 1).toString() + " ==> " + ascii.toString();
+//    }
+//}

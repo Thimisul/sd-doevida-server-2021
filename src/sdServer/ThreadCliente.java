@@ -66,13 +66,13 @@ public class ThreadCliente extends Thread {
 //        }
 //    }
     public void run() {
-        System.out.println(Utils.ANSI_GREEN + connection_info + Utils.ANSI_RESET + " Thread Iniciada --> ");
+        System.out.println(Utils.ANSI_YELLOW + "SERVIDOR: " + Utils.ANSI_GREEN + connection_info + Utils.ANSI_RESET + " Thread Iniciada --> " );
         running = true;
-        String messageJson = "";
+        String messageJson;
         User connectedUSer = new User();
         User findUser;
         User newUser;
-        JSONObject jsonMessageO = null;
+        JSONObject jsonMessageO;
         JSONObject response;
         JSONObject jsonO;
         JSONObject responseMessage = new JSONObject();
@@ -192,7 +192,6 @@ public class ThreadCliente extends Thread {
                     jsonMessageO = new JSONObject();
                     responseMessage = new JSONObject();
                     jsonMessageO = (JSONObject) jsonO.opt("message");
-                    System.out.println("Teste -------- " + jsonMessageO.optString("name"));
                     User userEdit = new User();
                     userEdit.setId(connectedUSer.getId());
                     userEdit.setUserName(connectedUSer.getUserName());
@@ -203,8 +202,6 @@ public class ThreadCliente extends Thread {
                     userEdit.setRecepValidated(jsonMessageO.optInt("receptor "));
                      {
                         try {
-                            
-                            System.out.println("Id usuario para edição: " + userEdit.getId());
                             userDao.editUser(userEdit);
                             response.put("protocol", 721);
                             responseMessage.put("result", true);
@@ -216,14 +213,14 @@ public class ThreadCliente extends Thread {
                             responseMessage.put("reason", ex.toString());
                             response.put("message", responseMessage);
                         } finally {
-                            
+                            System.out.print(Utils.ANSI_YELLOW + "SERVIDOR enviou - >>> " + Utils.ANSI_RESET);
                             utils.Utils.sendMessage(connection, response.toString());
                         }
                     }
                     break;
 
                 default:
-                    System.err.println("protocolo inexistente: " + choice);
+                    System.err.println(Utils.ANSI_YELLOW + "SERVIDOR: " + Utils.ANSI_RESET + "protocolo inexistente: " + choice);
 
             }
 
