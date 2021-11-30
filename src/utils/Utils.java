@@ -52,7 +52,7 @@ public static boolean sendMessage(Socket connection, String message) {
 
         try {
             DataInputStream input = new DataInputStream(connection.getInputStream());
-            response = input.readLine();
+            response = input.readUTF();
         } catch (IOException ex) {
             Logger.getLogger(Utils.class.getName()).log(Level.SEVERE, null, ex);
 //        } catch (ClassNotFoundException ex) {
