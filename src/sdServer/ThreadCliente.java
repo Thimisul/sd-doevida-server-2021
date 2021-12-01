@@ -97,7 +97,7 @@ public class ThreadCliente extends Thread {
                     jsonMessageO = (JSONObject) jsonO.opt("message");
                     try {
                         connectedUSer = userDao.userLogin(jsonMessageO.optString("username"), jsonMessageO.optString("password"));
-                        connection_info = connection_info.concat(" -- " + connectedUSer.getUserName());
+                        connection_info = connection_info.concat(" -- " + connectedUSer.getUsername());
                         System.out.println(Utils.ANSI_GREEN + connection_info + " Logado " + Utils.ANSI_RESET);
                         responseMessage.put("result", true);
                         response.put("protocol", 101);
@@ -201,7 +201,7 @@ public class ThreadCliente extends Thread {
                     if (findUser == null) {
                         try {
                             userDao.add(newUser);
-                            System.out.println(Utils.ANSI_YELLOW + "SERVIDOR: " + Utils.ANSI_GREEN + " Usuario " + newUser.getUserName() + "Cadastrado " + Utils.ANSI_RESET);
+                            System.out.println(Utils.ANSI_YELLOW + "SERVIDOR: " + Utils.ANSI_GREEN + " Usuario " + newUser.getUsername() + "Cadastrado " + Utils.ANSI_RESET);
                             responseMessage.put("result", true);
                             response.put("protocol", 701);
                             response.put("message", responseMessage);
@@ -211,7 +211,7 @@ public class ThreadCliente extends Thread {
                             Logger.getLogger(ThreadCliente.class.getName()).log(Level.SEVERE, null, ex);
                         }
                     } else {
-                        System.err.println(Utils.ANSI_YELLOW + "SERVIDOR: " + Utils.ANSI_RESET + "Usuario já existe: " + findUser.getUserName());
+                        System.err.println(Utils.ANSI_YELLOW + "SERVIDOR: " + Utils.ANSI_RESET + "Usuario já existe: " + findUser.getUsername());
                         responseMessage.put("result", false);
                         responseMessage.put("reason", "Usuario já existe");
                         response.put("protocol", 702);
@@ -255,7 +255,7 @@ public class ThreadCliente extends Thread {
                     jsonMessageO = (JSONObject) jsonO.opt("message");
                     User userEdit = new User();
                     userEdit.setId(connectedUSer.getId());
-                    userEdit.setUserName(connectedUSer.getUserName());
+                    userEdit.setUsername(connectedUSer.getUsername());
                     userEdit.setName(jsonMessageO.optString("name"));
                     userEdit.setUserType(connectedUSer.getUserType());
                     userEdit.setCity(jsonMessageO.optString("city"));
