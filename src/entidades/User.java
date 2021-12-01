@@ -18,6 +18,7 @@ import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import org.json.JSONObject;
 
 /**
  *
@@ -181,7 +182,17 @@ public class User implements Serializable {
 
     @Override
     public String toString() {
-        return "entidades.User[ id=" + id + " ]";
+        JSONObject userJsonO = new JSONObject();
+        
+        userJsonO.put("id", id);
+        userJsonO.put("name", name);
+        userJsonO.put("username", username);
+        userJsonO.put("usertype", userType);
+        userJsonO.put("city", city);
+        userJsonO.put("state", federativeUnit);
+        userJsonO.put("receptor", recepValidated);
+        
+        return userJsonO.toString();
     }
     
 }
