@@ -8,6 +8,8 @@ package sdServer;
 import DAO.UserDAO;
 import entidades.User;
 import java.net.Socket;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.persistence.NoResultException;
@@ -72,10 +74,11 @@ public class ThreadCliente extends Thread {
         User connectedUSer = new User();
         User findUser;
         User newUser;
+        List<User> usersList;
         JSONObject jsonMessageO;
         JSONObject response;
         JSONObject jsonO;
-        JSONObject responseMessage = new JSONObject();
+        JSONObject responseMessage;
         while (running) {
 //            try{
             System.out.println(Utils.ANSI_YELLOW + "SERVIDOR: aguardando requisição do cliente: " + Utils.ANSI_GREEN + connection_info + Utils.ANSI_RESET);
@@ -88,7 +91,7 @@ public class ThreadCliente extends Thread {
             switch (choice) {
                 case 100: //OK
                     response = new JSONObject();
-                    jsonMessageO = new JSONObject();
+                    responseMessage = new JSONObject();
                     System.out.println(Utils.ANSI_GREEN + connection_info + Utils.ANSI_CYAN + " #100    LOGIN ----> " + Utils.ANSI_RESET);
                     jsonMessageO = (JSONObject) jsonO.opt("message");
                     try {
@@ -111,17 +114,41 @@ public class ThreadCliente extends Thread {
                     break;
 
                 case 199: //OK
-                    response = new JSONObject();
                     System.out.println(Utils.ANSI_GREEN + connection_info + Utils.ANSI_CYAN + " #100    LOGOUT ----> " + Utils.ANSI_RESET);
                     System.out.println(Utils.ANSI_GREEN + connection_info + Utils.ANSI_RESET + " fez Logout");
-                    connectedUSer = null;
+                    connectedUSer = new User();
                     connection_info = connection.getInetAddress().getHostName();
+                    break;
+                    
+                case 600:
+                    response = new JSONObject();
+                    responseMessage = new JSONObject();
+                    System.out.println(Utils.ANSI_GREEN + connection_info + Utils.ANSI_CYAN + " #100    LISTAR PENDENTES ----> " + Utils.ANSI_RESET);
+                    response = new JSONObject();
+                    responseMessage = new JSONObject();
+                   if (connectedUSer.getUserType() == 3){
+                       usersList = userDao.geAllUsuario();
+                       responseMessage.put("result", true);
+                       responseMessage.put("list", usersList);
+                       response.put("protocol", 601);
+                       response.put("message", responseMessage);
+                       System.out.print(Utils.ANSI_YELLOW + "SERVIDOR enviou - >>> " + Utils.ANSI_RESET);
+                       Utils.sendMessage(connection, response.toString());
+                    } else {
+                        responseMessage.put("result", false);
+                        responseMessage.put("reason", "Usuario não é administrador");
+                        response.put("protocol", 602);
+                        response.put("message", responseMessage);
+                        System.out.print(Utils.ANSI_YELLOW + "SERVIDOR enviou - >>> " + Utils.ANSI_RESET);
+                        Utils.sendMessage(connection, response.toString());
+                   }
+                    
                     break;
 
                 case 700: //OK
                     response = new JSONObject();
-                    jsonMessageO = new JSONObject();
-                    System.out.println(Utils.ANSI_GREEN + connection_info + Utils.ANSI_CYAN + " #100    CADASTRO ----> ");
+                    responseMessage = new JSONObject();
+                    System.out.println(Utils.ANSI_GREEN + connection_info + Utils.ANSI_CYAN + " #100    CADASTRO ----> " + Utils.ANSI_RESET);
                     jsonMessageO = (JSONObject) jsonO.opt("message");
                     newUser
                             = new User(null, //id
@@ -149,7 +176,7 @@ public class ThreadCliente extends Thread {
                             Logger.getLogger(ThreadCliente.class.getName()).log(Level.SEVERE, null, ex);
                         }
                     } else {
-                        System.err.println(Utils.ANSI_YELLOW + "SERVIDOR: " + Utils.ANSI_GREEN + "Usuario já existe: " + findUser.getUserName());
+                        System.err.println(Utils.ANSI_YELLOW + "SERVIDOR: " + Utils.ANSI_RESET + "Usuario já existe: " + findUser.getUserName() );
                         responseMessage.put("result", false);
                         responseMessage.put("reason", "Usuario já existe");
                         response.put("protocol", 702);
@@ -161,10 +188,9 @@ public class ThreadCliente extends Thread {
 
                 case 710:
                     response = new JSONObject();
-                    jsonMessageO = new JSONObject();
+                    responseMessage = new JSONObject();
                     jsonMessageO = (JSONObject) jsonO.opt("message");
-                    System.out.println(Utils.ANSI_GREEN + connection_info + Utils.ANSI_CYAN + " #710    CONSULTA DE CADASTRO UNICO POR NOME ----> ");
-                    findUser = new User();
+                    System.out.println(Utils.ANSI_GREEN + connection_info + Utils.ANSI_CYAN + " #710    CONSULTA DE CADASTRO UNICO POR NOME ----> " + Utils.ANSI_RESET);
                     findUser = userDao.getUserByUsernameEdit(jsonMessageO.optString("username"));
                     if (findUser != null) {
                         System.out.println(Utils.ANSI_YELLOW + "SERVIDOR: " + Utils.ANSI_GREEN + "Usuario Encontrado " + findUser.toString() + Utils.ANSI_RESET);
@@ -188,8 +214,8 @@ public class ThreadCliente extends Thread {
                     
                 case 720:
                     response = new JSONObject();
-                    System.out.println(Utils.ANSI_GREEN + connection_info + Utils.ANSI_CYAN + " #720    SALVAR ATUALIZAÇÕES DO CADASTRO ----> ");
-                    jsonMessageO = new JSONObject();
+                    responseMessage = new JSONObject();
+                    System.out.println(Utils.ANSI_GREEN + connection_info + Utils.ANSI_CYAN + " #720    SALVAR ATUALIZAÇÕES DO CADASTRO ----> " + Utils.ANSI_RESET);
                     responseMessage = new JSONObject();
                     jsonMessageO = (JSONObject) jsonO.opt("message");
                     User userEdit = new User();
