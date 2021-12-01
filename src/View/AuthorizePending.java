@@ -5,28 +5,115 @@
  */
 package View;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import entidades.User;
+import java.awt.Dimension;
 import java.net.Socket;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Vector;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.swing.JTable;
+import javax.swing.table.TableModel;
+import org.json.JSONArray;
+import org.json.JSONObject;
+import utils.UserTableModel;
+import utils.Utils;
 
 /**
  *
  * @author lsilva
  */
 public class AuthorizePending extends javax.swing.JFrame {
-Socket connection;
+
+    Socket connection;
+    UserTableModel model;
+    Vector<String> data;
+    Vector<String> columnNames;
+    Vector<Vector<String>> dataList;
+
     /**
      * Creates new form AuthorizePending
+     *
      * @param connection
      */
     public AuthorizePending(Socket connection) {
-        connection = this.connection;
+        this.connection = connection;
+        CarregaTabela();
         initComponents();
         start();
     }
 
-        public void start() {
+    public void start() {
         this.pack();
         this.setVisible(true);
     }
+
+    public void CarregaTabela() {
+        System.out.println("Inicio do Carrega tabela \n");
+        JSONObject verificaPendentes = new JSONObject();
+        verificaPendentes.put("protocol", 600);
+        System.out.println("600 " + verificaPendentes.toString());
+        Utils.sendMessage(connection, verificaPendentes.toString());
+        System.out.println("Enviou a mensagem");
+        String messageJson = Utils.receiveMessage(connection);
+        System.out.println("Recebeu");
+        JSONObject jsonO = new JSONObject(messageJson);
+        System.out.println("mensagem de resposta jsonO --->>>" + jsonO.toString());
+        JSONObject messageO = new JSONObject(jsonO.optString("message"));
+        System.out.println("mensagem de resposta messageO --->>>" + messageO.toString());
+        JSONArray listO = new JSONArray(messageO.optString("list"));
+        System.out.println("mensagem de resposta listO --->>>" + listO.toString());
+
+        dataList = new Vector<>();
+        for (int i = 0; i < listO.length(); i++) {
+
+            JSONObject jsonObj = listO.getJSONObject(i);
+            data = new Vector<>();
+
+            data.add(jsonObj.getString("name"));
+            data.add(jsonObj.getString("city"));
+            data.add(jsonObj.getString("federativeUnit"));
+
+            dataList.add(data);
+        }
+
+        columnNames = new Vector<>();
+        columnNames.add("Nome");
+        columnNames.add("Cidade");
+        columnNames.add("Estado");
+
+        //JTable table = new JTable(dataList, columnNames);
+//        List<String> usuariosS = new ArrayList<String>();
+//        for (int i = 0; i < listO.length(); i++) {
+//            usuariosS.add(listO.getJSONObject(i).toString());
+//        }
+//
+//        System.out.println("Print do array " + usuariosS.get(0));
+//
+//        ObjectMapper userOM = new ObjectMapper();
+//        ArrayList<User> arrayUsuarios = new ArrayList<User>();
+//        for (int i = 0; i < usuariosS.size(); i++) {
+//            try {
+//                arrayUsuarios.add(userOM.readValue(usuariosS.get(i), User.class));
+//            } catch (JsonProcessingException ex) {
+//                Logger.getLogger(LandingPage.class.getName()).log(Level.SEVERE, null, ex);
+//            }
+//        }
+//
+//        model = new UserTableModel(arrayUsuarios);
+//        
+//        JTable table = new JTable(model) {
+//                    @Override
+//                    public Dimension getPreferredScrollableViewportSize() {
+//                        return new Dimension(300, 100);
+//                    }
+//                };
+//
+    }
+
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -38,26 +125,15 @@ Socket connection;
 
         jPanel1 = new javax.swing.JPanel();
         jScrollPane1 = new javax.swing.JScrollPane();
-        jTListaPendentes = new javax.swing.JTable();
+        jTListaPendentes = new javax.swing.JTable(dataList, columnNames);
         jLabel1 = new javax.swing.JLabel();
         jBAceitar = new javax.swing.JButton();
         jBRecusar = new javax.swing.JButton();
 
-        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
         jPanel1.setBorder(javax.swing.BorderFactory.createTitledBorder("Lista de Recebedores pendentes de aprovação"));
 
-        jTListaPendentes.setModel(new javax.swing.table.DefaultTableModel(
-            new Object [][] {
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null}
-            },
-            new String [] {
-                "Title 1", "Title 2", "Title 3", "Title 4"
-            }
-        ));
         jScrollPane1.setViewportView(jTListaPendentes);
 
         jLabel1.setText("Para aprovar ou reprovar, seleciona a linha acima correspondente ao usuário");

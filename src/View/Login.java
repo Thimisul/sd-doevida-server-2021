@@ -53,7 +53,7 @@ public class Login extends javax.swing.JFrame {
         jBLogin = new javax.swing.JButton();
         jBCreateReceptor = new javax.swing.JButton();
 
-        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
         jPReceptor.setBorder(javax.swing.BorderFactory.createTitledBorder("Bem Vindo"));
 

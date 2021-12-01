@@ -5,6 +5,7 @@
  */
 package View;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
@@ -15,6 +16,11 @@ import entidades.User;
 import org.json.JSONException;
 import org.json.JSONObject;
 import utils.Utils;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import java.util.ArrayList;
+import java.util.List;
+import org.json.JSONArray;
+import utils.UserTableModel;
 
 /**
  *
@@ -25,14 +31,7 @@ public class LandingPage extends javax.swing.JFrame {
     Socket connection;
     ObjectOutputStream saida;
 
-    /**
-     * Creates new form LandingPage
-     */
-    public LandingPage() {
-        initComponents();
-    }
-
-    LandingPage(Socket connection) {
+public LandingPage(Socket connection) {
         this.connection = connection;
         initComponents();
         start();
@@ -191,52 +190,11 @@ public class LandingPage extends javax.swing.JFrame {
     }//GEN-LAST:event_jBLogoutActionPerformed
 
     private void jBVerificaPendentesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jBVerificaPendentesActionPerformed
-        new AuthorizePending(connection);
+        AuthorizePending authorizePending = new AuthorizePending(connection);
 
-        JSONObject verificaPendentes = new JSONObject();
-        verificaPendentes.put("protocol", 600);
-        Utils.sendMessage(connection, verificaPendentes.toString());
-        String messageJson = Utils.receiveMessage(connection);
-        JSONObject jsonO = new JSONObject(messageJson);
-        JSONObject messageO = new JSONObject(jsonO.optString("message"));
-        System.out.println("mensagem de resposta --->>>" + messageJson);
     }//GEN-LAST:event_jBVerificaPendentesActionPerformed
 
-    /**
-     * @param args the command line arguments
-     */
-    public static void main(String args[]) {
-        /* Set the Nimbus look and feel */
-        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
-        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
-         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
-         */
-        try {
-            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
-                if ("Nimbus".equals(info.getName())) {
-                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
-                    break;
-                }
-            }
-        } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(LandingPage.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(LandingPage.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(LandingPage.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(LandingPage.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        }
-        //</editor-fold>
-        //</editor-fold>
 
-        /* Create and display the form */
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                new LandingPage().setVisible(true);
-            }
-        });
-    }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jBEditarCadastro;
