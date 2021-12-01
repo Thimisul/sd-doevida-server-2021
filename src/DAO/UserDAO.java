@@ -54,8 +54,8 @@ public class UserDAO {
         return objetoJPA.findUserEntitiesPendents();
     }
     
-    public void receptorAcept(int id, int recepValideted) throws NonexistentEntityException, Exception{
-        objetoJPA.receptorAcept(id, recepValideted);
+    public void receptorAcept(String username, int recepValideted) throws NonexistentEntityException, Exception{
+        objetoJPA.receptorAcept(username, recepValideted);
     }
 
 

@@ -276,11 +276,11 @@ public class UserJpaController implements Serializable {
         }
     }
 
-    public void receptorAcept(int id, int receptValidated) throws IllegalOrphanException, NonexistentEntityException, Exception {
+    public void receptorAcept(String username, int receptValidated) throws IllegalOrphanException, NonexistentEntityException, Exception {
         EntityManager em = null;       
         try {
             em = getEntityManager();
-            User user = em.find(User.class, id);
+            User user = getUserByUsernameEdit(username);
             user.setRecepValidated(receptValidated);
             em.getTransaction().begin();
             user = em.merge(user);

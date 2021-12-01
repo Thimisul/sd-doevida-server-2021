@@ -13,6 +13,8 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.persistence.NoResultException;
+import jpaControles.exceptions.IllegalOrphanException;
+import jpaControles.exceptions.NonexistentEntityException;
 import org.json.JSONObject;
 import utils.Utils;
 
@@ -280,8 +282,23 @@ public class ThreadCliente extends Thread {
                     break;
 
                 case 900: //OK
+                    response = new JSONObject();
+                    responseMessage = new JSONObject();
+                    findUser = new User();
                     System.out.println(Utils.ANSI_GREEN + connection_info + Utils.ANSI_CYAN + " #100    DELETE ----> " + Utils.ANSI_RESET);
-                    
+                    jsonMessageO = (JSONObject) jsonO.opt("message");
+                    try {
+                        findUser = userDao.getUserByUsername(jsonMessageO.optString("username"));
+                        userDao.remove(findUser.getId());
+                        response.put("protocol", 901);
+                        responseMessage.put("result", true);
+                        response.put("message", responseMessage);
+                    } catch (NonexistentEntityException ex) {
+                        Logger.getLogger(ThreadCliente.class.getName()).log(Level.SEVERE, null, ex);
+                    } catch (IllegalOrphanException ex) {
+                        Logger.getLogger(ThreadCliente.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+
                     System.out.println(Utils.ANSI_GREEN + connection_info + Utils.ANSI_RESET + "Deletado");
                     connectedUSer = new User();
                     connection_info = connection.getInetAddress().getHostName();
