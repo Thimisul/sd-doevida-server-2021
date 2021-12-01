@@ -71,6 +71,7 @@ public class AuthorizePending extends javax.swing.JFrame {
 
             data.add(String.valueOf(jsonObj.getInt("id")));
             data.add(jsonObj.getString("name"));
+            data.add(jsonObj.getString("username"));
             data.add(jsonObj.getString("city"));
             data.add(jsonObj.getString("federativeUnit"));
 
@@ -78,8 +79,9 @@ public class AuthorizePending extends javax.swing.JFrame {
         }
 
         columnNames = new Vector<>();
-        columnNames.add("ID");
-        columnNames.add("Nome");
+        columnNames.add("ID");//0
+        columnNames.add("Nome");//1
+        columnNames.add("Username");//2
         columnNames.add("Cidade");
         columnNames.add("Estado");
 
@@ -192,13 +194,13 @@ public class AuthorizePending extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void jBAceitarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jBAceitarActionPerformed
-        String txtcodigo;
-        txtcodigo = (String) jTListaPendentes.getValueAt(jTListaPendentes.getSelectedRow(), 0);
-        System.out.println("O valor pego é: " + txtcodigo);
+        String txtusername;
+        txtusername = (String) jTListaPendentes.getValueAt(jTListaPendentes.getSelectedRow(), 2);
+        System.out.println("O valor pego é: " + txtusername);
         JSONObject enviaPendente = new JSONObject();
         JSONObject enviaPendenteMessage = new JSONObject();
         enviaPendente.put("protocol", 610);
-        enviaPendenteMessage.put("id", txtcodigo);
+        enviaPendenteMessage.put("username", txtusername);
         enviaPendenteMessage.put("receptor", 1);
         enviaPendente.put("message", enviaPendenteMessage);
         System.out.println("610 " + enviaPendente.toString());
