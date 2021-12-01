@@ -149,7 +149,7 @@ public class ThreadCliente extends Thread {
                     if (connectedUSer.getUserType() == 3) {
                         try {
                             jsonMessageO = (JSONObject) jsonO.opt("message");
-                            userDao.receptorAcept(jsonMessageO.getInt("id"), jsonMessageO.optInt("receptor"));
+                            userDao.receptorAcept(jsonMessageO.getString("username"), jsonMessageO.optInt("receptor"));
                             if (jsonMessageO.optInt("receptor") == 1) {
                                 responseMessage.put("result", true);
                                 responseMessage.put("message", "Aprovado");
@@ -277,6 +277,14 @@ public class ThreadCliente extends Thread {
                             utils.Utils.sendMessage(connection, response.toString());
                         }
                     }
+                    break;
+
+                case 900: //OK
+                    System.out.println(Utils.ANSI_GREEN + connection_info + Utils.ANSI_CYAN + " #100    DELETE ----> " + Utils.ANSI_RESET);
+                    
+                    System.out.println(Utils.ANSI_GREEN + connection_info + Utils.ANSI_RESET + "Deletado");
+                    connectedUSer = new User();
+                    connection_info = connection.getInetAddress().getHostName();
                     break;
 
                 default:
