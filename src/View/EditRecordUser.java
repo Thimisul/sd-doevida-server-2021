@@ -300,27 +300,24 @@ public class EditRecordUser extends javax.swing.JFrame {
         JSONObject excluirUser = new JSONObject();
         JSONObject excluirUserMessage = new JSONObject();
 
-        if (jPFSenha.getText().equals(jPFRepitaSenha.getText())) {
-            try {
-                excluirUser.put("protocol", 900);
-                excluirUserMessage.put("username", Login.usernameglobal);;
-                excluirUser.put("message", excluirUserMessage);
-                Utils.sendMessage(connection, excluirUser.toString());
-                String messageJson = Utils.receiveMessage(connection);
-                JSONObject jsonO = new JSONObject(messageJson);
-                System.out.println("mensagem de resposta --->>>" + messageJson);
-                if (jsonO.optInt("protocol") == 901) {
-                    JOptionPane.showMessageDialog(rootPane, "Usuário excluido com sucesso!");
-                    dispose();
-                    LandingPage.dispose();
-                    new Login(connection);
-                }
-            } catch (JSONException ex) {
-                Logger.getLogger(EditRecordUser.class.getName()).log(Level.SEVERE, null, ex);
+        try {
+            excluirUser.put("protocol", 900);
+            excluirUserMessage.put("username", Login.usernameglobal);
+            excluirUser.put("message", excluirUserMessage);
+            Utils.sendMessage(connection, excluirUser.toString());
+            String messageJson = Utils.receiveMessage(connection);
+            JSONObject jsonO = new JSONObject(messageJson);
+            System.out.println("mensagem de resposta --->>>" + messageJson);
+            if (jsonO.optInt("protocol") == 901) {
+                JOptionPane.showMessageDialog(rootPane, "Usuário excluido com sucesso!");
+                dispose();
+                LandingPage.dispose();
+                new Login(connection);
+            } else {
+                JOptionPane.showMessageDialog(rootPane, "Não excluido");
             }
-
-        } else {
-            JOptionPane.showMessageDialog(rootPane, "Não excluido");
+        } catch (JSONException ex) {
+            Logger.getLogger(EditRecordUser.class.getName()).log(Level.SEVERE, null, ex);
         }
     }//GEN-LAST:event_jBExcluirActionPerformed
 
