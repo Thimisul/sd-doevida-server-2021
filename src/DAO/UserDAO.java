@@ -11,6 +11,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.NoResultException;
 import javax.persistence.Persistence;
+import javax.swing.JTable;
 import jpaControles.UserJpaController;
 import jpaControles.exceptions.IllegalOrphanException;
 import jpaControles.exceptions.NonexistentEntityException;
@@ -51,6 +52,10 @@ public class UserDAO {
     
     public List<User> getPendentUsers() {
         return objetoJPA.findUserEntitiesPendents();
+    }
+    
+    public void receptorAcept(int id, int recepValideted) throws NonexistentEntityException, Exception{
+        objetoJPA.receptorAcept(id, recepValideted);
     }
 
 

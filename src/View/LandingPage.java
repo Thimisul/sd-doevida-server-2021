@@ -5,7 +5,7 @@
  */
 package View;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
+
 import java.io.IOException;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
@@ -16,7 +16,6 @@ import entidades.User;
 import org.json.JSONException;
 import org.json.JSONObject;
 import utils.Utils;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import java.util.ArrayList;
 import java.util.List;
 import org.json.JSONArray;

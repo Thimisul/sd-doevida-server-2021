@@ -68,7 +68,7 @@ public class ThreadCliente extends Thread {
 //        }
 //    }
     public void run() {
-        System.out.println(Utils.ANSI_YELLOW + "SERVIDOR: " + Utils.ANSI_GREEN + connection_info + Utils.ANSI_RESET + " Thread Iniciada --> " );
+        System.out.println(Utils.ANSI_YELLOW + "SERVIDOR: " + Utils.ANSI_GREEN + connection_info + Utils.ANSI_RESET + " Thread Iniciada --> ");
         running = true;
         String messageJson;
         User connectedUSer = new User();
@@ -118,21 +118,19 @@ public class ThreadCliente extends Thread {
                     connectedUSer = new User();
                     connection_info = connection.getInetAddress().getHostName();
                     break;
-                    
+
                 case 600:
                     response = new JSONObject();
                     responseMessage = new JSONObject();
                     System.out.println(Utils.ANSI_GREEN + connection_info + Utils.ANSI_CYAN + " #100    LISTAR PENDENTES ----> " + Utils.ANSI_RESET);
-                    response = new JSONObject();
-                    responseMessage = new JSONObject();
-                   if (connectedUSer.getUserType() == 3){
-                       usersList = userDao.getPendentUsers();
-                       responseMessage.put("result", true);
-                       responseMessage.put("list", usersList);
-                       response.put("protocol", 601);
-                       response.put("message", responseMessage);
-                       System.out.print(Utils.ANSI_YELLOW + "SERVIDOR enviou - >>> " + Utils.ANSI_RESET);
-                       Utils.sendMessage(connection, response.toString());
+                    if (connectedUSer.getUserType() == 3) {
+                        usersList = userDao.getPendentUsers();
+                        responseMessage.put("result", true);
+                        responseMessage.put("list", usersList);
+                        response.put("protocol", 601);
+                        response.put("message", responseMessage);
+                        System.out.print(Utils.ANSI_YELLOW + "SERVIDOR enviou - >>> " + Utils.ANSI_RESET);
+                        Utils.sendMessage(connection, response.toString());
                     } else {
                         responseMessage.put("result", false);
                         responseMessage.put("reason", "Usuario não é administrador");
@@ -140,7 +138,44 @@ public class ThreadCliente extends Thread {
                         response.put("message", responseMessage);
                         System.out.print(Utils.ANSI_YELLOW + "SERVIDOR enviou - >>> " + Utils.ANSI_RESET);
                         Utils.sendMessage(connection, response.toString());
-                   }
+                    }
+                    break;
+
+                case 610:
+                    response = new JSONObject();
+                    responseMessage = new JSONObject();
+                    System.out.println(Utils.ANSI_GREEN + connection_info + Utils.ANSI_CYAN + " #100    ADIÇAO DE RECEPTOR ----> " + Utils.ANSI_RESET);
+
+                    if (connectedUSer.getUserType() == 3) {
+                        try {
+                            jsonMessageO = (JSONObject) jsonO.opt("message");
+                            userDao.receptorAcept(jsonMessageO.getInt("id"), jsonMessageO.optInt("receptor"));
+                            if (jsonMessageO.optInt("receptor") == 1) {
+                                responseMessage.put("result", true);
+                                responseMessage.put("message", "Aprovado");
+                                response.put("protocol", 611);
+                                response.put("message", responseMessage);
+                            } else {
+                                responseMessage.put("result", true);
+                                responseMessage.put("message", "Reprovado");
+                                response.put("protocol", 612);
+                                response.put("message", responseMessage);
+                            }
+
+                            System.out.print(Utils.ANSI_YELLOW + "SERVIDOR enviou - >>> " + Utils.ANSI_RESET);
+                            Utils.sendMessage(connection, response.toString());
+
+                        } catch (Exception ex) {
+                            Logger.getLogger(ThreadCliente.class.getName()).log(Level.SEVERE, null, ex);
+                        }
+                    } else {
+                        responseMessage.put("result", false);
+                        responseMessage.put("reason", "Usuario não é administrador");
+                        response.put("protocol", 602);
+                        response.put("message", responseMessage);
+                        System.out.print(Utils.ANSI_YELLOW + "SERVIDOR enviou - >>> " + Utils.ANSI_RESET);
+                        Utils.sendMessage(connection, response.toString());
+                    }
                     break;
 
                 case 700: //OK
@@ -164,7 +199,7 @@ public class ThreadCliente extends Thread {
                     if (findUser == null) {
                         try {
                             userDao.add(newUser);
-                            System.out.println(Utils.ANSI_YELLOW + "SERVIDOR: " + Utils.ANSI_GREEN + " Usuario " + newUser.getUserName()+ "Cadastrado " + Utils.ANSI_RESET);
+                            System.out.println(Utils.ANSI_YELLOW + "SERVIDOR: " + Utils.ANSI_GREEN + " Usuario " + newUser.getUserName() + "Cadastrado " + Utils.ANSI_RESET);
                             responseMessage.put("result", true);
                             response.put("protocol", 701);
                             response.put("message", responseMessage);
@@ -174,7 +209,7 @@ public class ThreadCliente extends Thread {
                             Logger.getLogger(ThreadCliente.class.getName()).log(Level.SEVERE, null, ex);
                         }
                     } else {
-                        System.err.println(Utils.ANSI_YELLOW + "SERVIDOR: " + Utils.ANSI_RESET + "Usuario já existe: " + findUser.getUserName() );
+                        System.err.println(Utils.ANSI_YELLOW + "SERVIDOR: " + Utils.ANSI_RESET + "Usuario já existe: " + findUser.getUserName());
                         responseMessage.put("result", false);
                         responseMessage.put("reason", "Usuario já existe");
                         response.put("protocol", 702);
@@ -209,7 +244,7 @@ public class ThreadCliente extends Thread {
                     System.out.print(Utils.ANSI_YELLOW + "SERVIDOR enviou - >>> " + Utils.ANSI_RESET);
                     Utils.sendMessage(connection, response.toString());
                     break;
-                    
+
                 case 720:
                     response = new JSONObject();
                     responseMessage = new JSONObject();
