@@ -31,7 +31,7 @@ public class LandingPage extends javax.swing.JFrame {
     Socket connection;
     ObjectOutputStream saida;
 
-public LandingPage(Socket connection) {
+    public LandingPage(Socket connection) {
         this.connection = connection;
         initComponents();
         start();
@@ -190,10 +190,20 @@ public LandingPage(Socket connection) {
     }//GEN-LAST:event_jBLogoutActionPerformed
 
     private void jBVerificaPendentesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jBVerificaPendentesActionPerformed
-        AuthorizePending authorizePending = new AuthorizePending(connection);
-
+        JSONObject verificaPendentes = new JSONObject();
+        verificaPendentes.put("protocol", 600);
+        Utils.sendMessage(connection, verificaPendentes.toString());
+        String messageJson = Utils.receiveMessage(connection);
+        JSONObject jsonO = new JSONObject(messageJson);
+        System.out.println("mensagem de resposta jsonO --->>>" + jsonO.toString());
+        Integer protocol = (Integer) jsonO.opt("protocol");
+        JSONObject messageO = new JSONObject(jsonO.optString("message"));
+        if (protocol == 602) {
+            JOptionPane.showMessageDialog(rootPane, "O usuário não é administrador. Fechando a interface\n" + "Mensagem do servidor: " + messageO.optString("reason"));
+        } else {
+            AuthorizePending authorizePending = new AuthorizePending(connection);
+        }
     }//GEN-LAST:event_jBVerificaPendentesActionPerformed
-
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

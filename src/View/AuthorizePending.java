@@ -5,18 +5,10 @@
  */
 package View;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import entidades.User;
-import java.awt.Dimension;
 import java.net.Socket;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Vector;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import javax.swing.JTable;
-import javax.swing.table.TableModel;
+import javax.swing.JOptionPane;
+import static javax.swing.UIManager.getInt;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import utils.UserTableModel;
@@ -62,17 +54,22 @@ public class AuthorizePending extends javax.swing.JFrame {
         System.out.println("Recebeu");
         JSONObject jsonO = new JSONObject(messageJson);
         System.out.println("mensagem de resposta jsonO --->>>" + jsonO.toString());
+        Integer protocol = (Integer) jsonO.opt("protocol");
+        System.out.println("mensagem de resposta protocolo --->>>" + protocol.toString());
         JSONObject messageO = new JSONObject(jsonO.optString("message"));
         System.out.println("mensagem de resposta messageO --->>>" + messageO.toString());
         JSONArray listO = new JSONArray(messageO.optString("list"));
         System.out.println("mensagem de resposta listO --->>>" + listO.toString());
-
+        //Mensagem enviada: {"protocol":602,"message":{"result":false,"reason":"Usuario não é administrador"}} 
+        //System.out.println(protocol);
         dataList = new Vector<>();
+
         for (int i = 0; i < listO.length(); i++) {
 
             JSONObject jsonObj = listO.getJSONObject(i);
             data = new Vector<>();
 
+            data.add(String.valueOf(jsonObj.getInt("id")));
             data.add(jsonObj.getString("name"));
             data.add(jsonObj.getString("city"));
             data.add(jsonObj.getString("federativeUnit"));
@@ -81,6 +78,7 @@ public class AuthorizePending extends javax.swing.JFrame {
         }
 
         columnNames = new Vector<>();
+        columnNames.add("ID");
         columnNames.add("Nome");
         columnNames.add("Cidade");
         columnNames.add("Estado");
@@ -139,6 +137,11 @@ public class AuthorizePending extends javax.swing.JFrame {
         jLabel1.setText("Para aprovar ou reprovar, seleciona a linha acima correspondente ao usuário");
 
         jBAceitar.setText("Aceitar");
+        jBAceitar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jBAceitarActionPerformed(evt);
+            }
+        });
 
         jBRecusar.setText("Recusar");
 
@@ -187,6 +190,26 @@ public class AuthorizePending extends javax.swing.JFrame {
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
+
+    private void jBAceitarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jBAceitarActionPerformed
+        String txtcodigo;
+        txtcodigo = (String) jTListaPendentes.getValueAt(jTListaPendentes.getSelectedRow(), 0);
+        System.out.println("O valor pego é: " + txtcodigo);
+        JSONObject enviaPendente = new JSONObject();
+        enviaPendente.put("protocol", 610);
+        System.out.println("610 " + enviaPendente.toString());
+        Utils.sendMessage(connection, enviaPendente.toString());
+        System.out.println("Enviou a mensagem");
+        String messageJson = Utils.receiveMessage(connection);
+        System.out.println("Recebeu");
+        JSONObject jsonO = new JSONObject(messageJson);
+        System.out.println("mensagem de resposta jsonO --->>>" + jsonO.toString());
+        JSONObject messageO = new JSONObject(jsonO.optString("message"));
+        System.out.println("mensagem de resposta messageO --->>>" + messageO.toString());
+        JSONArray listO = new JSONArray(messageO.optString("list"));
+        System.out.println("mensagem de resposta listO --->>>" + listO.toString());
+
+    }//GEN-LAST:event_jBAceitarActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jBAceitar;
