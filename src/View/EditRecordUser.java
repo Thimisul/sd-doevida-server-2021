@@ -25,7 +25,7 @@ public class EditRecordUser extends javax.swing.JFrame {
     User userEdit;
     Socket connection;
     ObjectOutputStream saida;
-    
+
     /**
      * Creates new form EditRecordUser
      *
@@ -78,6 +78,7 @@ public class EditRecordUser extends javax.swing.JFrame {
         jTFCidade = new javax.swing.JTextField();
         jLabel6 = new javax.swing.JLabel();
         jComboEstado = new javax.swing.JComboBox<>();
+        jBExcluir = new javax.swing.JButton();
 
         setTitle("Editar Cadastro");
         setLocationByPlatform(true);
@@ -99,8 +100,6 @@ public class EditRecordUser extends javax.swing.JFrame {
                 jBEditarActionPerformed(evt);
             }
         });
-
-        jTFNome.setActionCommand("<Not Set>");
 
         jPFSenha.setText("Informe a nova senha");
         jPFSenha.addFocusListener(new java.awt.event.FocusAdapter() {
@@ -126,14 +125,19 @@ public class EditRecordUser extends javax.swing.JFrame {
 
         jLabel2.setText("Cidade");
 
-        jTFCidade.setActionCommand("<Not Set>");
-
         jLabel6.setText("Estado");
 
         jComboEstado.setModel(new javax.swing.DefaultComboBoxModel(Utils.federativeUnit));
         jComboEstado.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jComboEstadoActionPerformed(evt);
+            }
+        });
+
+        jBExcluir.setText("Excluir conta");
+        jBExcluir.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jBExcluirActionPerformed(evt);
             }
         });
 
@@ -144,7 +148,6 @@ public class EditRecordUser extends javax.swing.JFrame {
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jBEditar, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(jPanel1Layout.createSequentialGroup()
@@ -162,17 +165,21 @@ public class EditRecordUser extends javax.swing.JFrame {
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addComponent(jComboEstado, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))))
                     .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGap(139, 139, 139)
-                        .addComponent(jLabel5)
-                        .addGap(0, 0, Short.MAX_VALUE))
-                    .addGroup(jPanel1Layout.createSequentialGroup()
                         .addComponent(jLabel3)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jPFSenha))
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addComponent(jLabel4)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jPFRepitaSenha, javax.swing.GroupLayout.DEFAULT_SIZE, 288, Short.MAX_VALUE)))
+                        .addComponent(jPFRepitaSenha, javax.swing.GroupLayout.DEFAULT_SIZE, 288, Short.MAX_VALUE))
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addGap(139, 139, 139)
+                        .addComponent(jLabel5)
+                        .addGap(0, 0, Short.MAX_VALUE))
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addComponent(jBEditar, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(jBExcluir, javax.swing.GroupLayout.PREFERRED_SIZE, 133, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap())
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addGap(120, 120, 120)
@@ -202,7 +209,9 @@ public class EditRecordUser extends javax.swing.JFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jCBpendingDonation)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jBEditar, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jBEditar, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jBExcluir))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(jLabel5))
         );
@@ -241,14 +250,14 @@ public class EditRecordUser extends javax.swing.JFrame {
                 editarUser.put("protocol", 720);
                 editarUserMessage.put("name", jTFNome.getText());
                 editarUserMessage.put("city", jTFCidade.getText());
-                editarUserMessage.put("state",Utils.federativeUnit[jComboEstado.getSelectedIndex()]);
+                editarUserMessage.put("state", Utils.federativeUnit[jComboEstado.getSelectedIndex()]);
                 editarUserMessage.put("password", jPFSenha.getText());
                 editarUser.put("message", editarUserMessage);
                 Utils.sendMessage(connection, editarUser.toString());
                 String messageJson = Utils.receiveMessage(connection);
                 JSONObject jsonO = new JSONObject(messageJson);
                 System.out.println("mensagem de resposta --->>>" + messageJson);
-                if (jsonO.optInt("protocol") == 721){
+                if (jsonO.optInt("protocol") == 721) {
                     JOptionPane.showMessageDialog(rootPane, "Usuário alterado com sucesso!");
                     dispose();
                     //LandingPage landingpage = new LandingPage(connection);
@@ -283,10 +292,38 @@ public class EditRecordUser extends javax.swing.JFrame {
         // TODO add your handling code here:
     }//GEN-LAST:event_jComboEstadoActionPerformed
 
+    private void jBExcluirActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jBExcluirActionPerformed
+        JSONObject excluirUser = new JSONObject();
+        JSONObject excluirUserMessage = new JSONObject();
+
+        if (jPFSenha.getText().equals(jPFRepitaSenha.getText())) {
+            try {
+                excluirUser.put("protocol", 900);
+                excluirUserMessage.put("username", jTFNome.getText());;
+                excluirUser.put("message", excluirUserMessage);
+                Utils.sendMessage(connection, excluirUser.toString());
+                String messageJson = Utils.receiveMessage(connection);
+                JSONObject jsonO = new JSONObject(messageJson);
+                System.out.println("mensagem de resposta --->>>" + messageJson);
+                if (jsonO.optInt("protocol") == 901) {
+                    JOptionPane.showMessageDialog(rootPane, "Usuário excluido com sucesso!");
+                    dispose();
+                    //LandingPage landingpage = new LandingPage(connection);
+                }
+            } catch (JSONException ex) {
+                Logger.getLogger(EditRecordUser.class.getName()).log(Level.SEVERE, null, ex);
+            }
+
+        } else {
+            JOptionPane.showMessageDialog(rootPane, "Não excluido");
+        }
+    }//GEN-LAST:event_jBExcluirActionPerformed
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.ButtonGroup bGBusca;
     private javax.swing.JButton jBEditar;
+    private javax.swing.JButton jBExcluir;
     private javax.swing.JCheckBox jCBpendingDonation;
     private javax.swing.JComboBox<String> jComboEstado;
     private javax.swing.JLabel jLabel1;
