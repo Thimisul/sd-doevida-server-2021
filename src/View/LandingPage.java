@@ -200,14 +200,6 @@ public class LandingPage extends javax.swing.JFrame {
         JSONObject jsonO = new JSONObject(messageJson);
         JSONObject messageO = new JSONObject(jsonO.optString("message"));
         System.out.println("mensagem de resposta --->>>" + messageJson);
-
-        Integer protocol = (Integer) jsonO.opt("protocol");
-        userEdit.setName(messageO.optString("name"));
-        userEdit.setCity(messageO.optString("city"));
-        userEdit.setFederativeUnit(messageO.optString("state"));
-        userEdit.setRecepValidated(messageO.optInt("receptor"));
-
-
     }//GEN-LAST:event_jBVerificaPendentesActionPerformed
 
     /**
