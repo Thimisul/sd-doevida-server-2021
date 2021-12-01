@@ -123,7 +123,7 @@ public class UserJpaController implements Serializable {
             }
         }
     }
-    
+
     public void editUser(User user) throws IllegalOrphanException, NonexistentEntityException, Exception {
         EntityManager em = null;
         try {
@@ -176,6 +176,16 @@ public class UserJpaController implements Serializable {
             if (em != null) {
                 em.close();
             }
+        }
+    }
+
+    public List<User> findUserEntitiesPendents() {
+        EntityManager em = getEntityManager();
+        try {
+            Query q = em.createNamedQuery("User.findByPendents");
+            return q.getResultList();
+        } finally {
+            em.close();
         }
     }
 
@@ -251,8 +261,8 @@ public class UserJpaController implements Serializable {
             em.close();
         }
     }
-    
-        public User getUserByUsernameEdit(String username) throws NoResultException{
+
+    public User getUserByUsernameEdit(String username) throws NoResultException {
         EntityManager em = getEntityManager();
         try {
             Query q = em.createNamedQuery("User.findByUsernameEdit");
