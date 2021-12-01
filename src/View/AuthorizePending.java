@@ -147,6 +147,11 @@ public class AuthorizePending extends javax.swing.JFrame {
         });
 
         jBRecusar.setText("Recusar");
+        jBRecusar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jBRecusarActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -216,6 +221,29 @@ public class AuthorizePending extends javax.swing.JFrame {
         JOptionPane.showMessageDialog(rootPane, "Usuário promovido à Receptor\n");
         dispose();
     }//GEN-LAST:event_jBAceitarActionPerformed
+
+    private void jBRecusarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jBRecusarActionPerformed
+        String txtusername;
+        txtusername = (String) jTListaPendentes.getValueAt(jTListaPendentes.getSelectedRow(), 2);
+        System.out.println("O valor pego é: " + txtusername);
+        JSONObject enviaPendente = new JSONObject();
+        JSONObject enviaPendenteMessage = new JSONObject();
+        enviaPendente.put("protocol", 610);
+        enviaPendenteMessage.put("username", txtusername);
+        enviaPendenteMessage.put("receptor", 99);
+        enviaPendente.put("message", enviaPendenteMessage);
+        System.out.println("610 " + enviaPendente.toString());
+        Utils.sendMessage(connection, enviaPendente.toString());
+        System.out.println("Enviou a mensagem");
+        String messageJson = Utils.receiveMessage(connection);
+        System.out.println("Recebeu");
+        JSONObject jsonO = new JSONObject(messageJson);
+        System.out.println("mensagem de resposta jsonO --->>>" + jsonO.toString());
+        JSONObject messageO = new JSONObject(jsonO.optString("message"));
+        System.out.println("mensagem de resposta messageO --->>>" + messageO.toString());
+        JOptionPane.showMessageDialog(rootPane, "Usuário não promovido à Receptor\n");
+        dispose();
+    }//GEN-LAST:event_jBRecusarActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jBAceitar;
