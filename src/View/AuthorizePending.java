@@ -196,7 +196,11 @@ public class AuthorizePending extends javax.swing.JFrame {
         txtcodigo = (String) jTListaPendentes.getValueAt(jTListaPendentes.getSelectedRow(), 0);
         System.out.println("O valor pego é: " + txtcodigo);
         JSONObject enviaPendente = new JSONObject();
+        JSONObject enviaPendenteMessage = new JSONObject();
         enviaPendente.put("protocol", 610);
+        enviaPendenteMessage.put("id", txtcodigo);
+        enviaPendenteMessage.put("receptor", 1);
+        enviaPendente.put("message", enviaPendenteMessage);
         System.out.println("610 " + enviaPendente.toString());
         Utils.sendMessage(connection, enviaPendente.toString());
         System.out.println("Enviou a mensagem");
@@ -206,9 +210,8 @@ public class AuthorizePending extends javax.swing.JFrame {
         System.out.println("mensagem de resposta jsonO --->>>" + jsonO.toString());
         JSONObject messageO = new JSONObject(jsonO.optString("message"));
         System.out.println("mensagem de resposta messageO --->>>" + messageO.toString());
-        JSONArray listO = new JSONArray(messageO.optString("list"));
-        System.out.println("mensagem de resposta listO --->>>" + listO.toString());
-
+        JOptionPane.showMessageDialog(rootPane, "Usuário promovido à Receptor\n");
+        dispose();
     }//GEN-LAST:event_jBAceitarActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
