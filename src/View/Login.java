@@ -164,6 +164,13 @@ public class Login extends javax.swing.JFrame {
                 System.out.println(usernameglobal);
                 if (protocol == 101) {
                     System.out.println("Login ok");
+                            
+                //testar protocolos apos login--------------------------------------------
+                //JSONObject teste = new JSONObject();
+                //teste.put("protocol", 600);
+                //Utils.sendMessage(connection, teste.toString());
+                //----------------------------------------------------------------------
+                
                     new LandingPage(connection);
                     dispose();
                 } else if (protocol == 102) {

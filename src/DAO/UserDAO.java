@@ -48,6 +48,11 @@ public class UserDAO {
     public List<User> geAllUsuario() {
         return objetoJPA.findUserEntities();
     }
+    
+    public List<User> getPendentUsers() {
+        return objetoJPA.findUserEntitiesPendents();
+    }
+
 
     public void persist(User object) {
         EntityManager em = emf.createEntityManager();

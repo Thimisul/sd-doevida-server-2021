@@ -87,7 +87,6 @@ public class ThreadCliente extends Thread {
             int choice = (Integer) jsonO.opt("protocol");
             System.out.println(Utils.ANSI_GREEN + connection_info + " enviou - >>> " + Utils.ANSI_RESET + messageJson);
             UserDAO userDao = new UserDAO();
-
             switch (choice) {
                 case 100: //OK
                     response = new JSONObject();
@@ -127,7 +126,7 @@ public class ThreadCliente extends Thread {
                     response = new JSONObject();
                     responseMessage = new JSONObject();
                    if (connectedUSer.getUserType() == 3){
-                       usersList = userDao.geAllUsuario();
+                       usersList = userDao.getPendentUsers();
                        responseMessage.put("result", true);
                        responseMessage.put("list", usersList);
                        response.put("protocol", 601);
@@ -142,7 +141,6 @@ public class ThreadCliente extends Thread {
                         System.out.print(Utils.ANSI_YELLOW + "SERVIDOR enviou - >>> " + Utils.ANSI_RESET);
                         Utils.sendMessage(connection, response.toString());
                    }
-                    
                     break;
 
                 case 700: //OK
@@ -222,10 +220,11 @@ public class ThreadCliente extends Thread {
                     userEdit.setId(connectedUSer.getId());
                     userEdit.setUserName(connectedUSer.getUserName());
                     userEdit.setName(jsonMessageO.optString("name"));
+                    userEdit.setUserType(connectedUSer.getUserType());
                     userEdit.setCity(jsonMessageO.optString("city"));
                     userEdit.setFederativeUnit(jsonMessageO.optString("state").toUpperCase().substring(0, 2));
                     userEdit.setPassword(jsonMessageO.optString("password"));
-                    userEdit.setRecepValidated(jsonMessageO.optInt("receptor "));
+                    userEdit.setRecepValidated(jsonMessageO.optInt("receptor"));
                      {
                         try {
                             userDao.editUser(userEdit);

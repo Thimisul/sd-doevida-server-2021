@@ -39,7 +39,7 @@ public class Utils {
             output.flush();
             output.write((message + "\n").getBytes("UTF-8"));
             output.flush();
-            System.out.println("Mensagem enviada: " + message);
+            System.out.println("Mensagem enviada: " + message + " ");
             output.flush();
             return true;
         } catch (IOException ex) {

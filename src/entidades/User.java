@@ -37,7 +37,9 @@ import org.json.JSONObject;
     @NamedQuery(name = "User.findByFederativeUnit", query = "SELECT u FROM User u WHERE u.federativeUnit = :federativeUnit"),
     @NamedQuery(name = "User.findByRecepValidated", query = "SELECT u FROM User u WHERE u.recepValidated = :recepValidated"),
     @NamedQuery(name = "User.findByPassword", query = "SELECT u FROM User u WHERE u.password = :password"),
-    @NamedQuery(name = "User.login", query = "SELECT u FROM User u WHERE u.username = :username and u.password = :password")})
+    @NamedQuery(name = "User.login", query = "SELECT u FROM User u WHERE u.username = :username and u.password = :password"),
+    @NamedQuery(name = "User.findByPendents", query = "SELECT u FROM User u WHERE u.recepValidated = 0 ")})
+
 public class User implements Serializable {
 
     private static final long serialVersionUID = 1L;
