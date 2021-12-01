@@ -48,7 +48,7 @@ public class SDServer {
                 
             }
         } catch (IOException ex) {
-            Logger.getLogger(SDServer.class.getName()).log(Level.SEVERE, null, ex);
+            System.err.println("Conexão Perdida com o Cliente");
         }
     }
     

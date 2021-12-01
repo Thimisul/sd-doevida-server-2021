@@ -82,7 +82,7 @@ public class ThreadCliente extends Thread {
         JSONObject jsonO;
         JSONObject responseMessage;
         while (running) {
-//            try{
+            try{
             System.out.println(Utils.ANSI_YELLOW + "SERVIDOR: aguardando requisição do cliente: " + Utils.ANSI_GREEN + connection_info + Utils.ANSI_RESET);
             messageJson = Utils.receiveMessage(connection);
             jsonO = new JSONObject(messageJson);
@@ -329,9 +329,10 @@ public class ThreadCliente extends Thread {
 //            } else {
 //                System.out.println(connection.getRemoteSocketAddress() + " Enviou: " + message);
 //            }  
-//        } catch ( SocketException ex){
-//                System.out.println("Conexão perdida com o Cliente: " + connection_info);
-//        }
+        } catch ( NullPointerException ex){
+                System.out.print(Utils.ANSI_RED + connection_info + Utils.ANSI_RESET);
+                running = false;
+        }
         }
     }
 }

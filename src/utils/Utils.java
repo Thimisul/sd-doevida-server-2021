@@ -8,12 +8,7 @@ package utils;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
 import java.net.Socket;
-import java.net.SocketException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  *
@@ -33,7 +28,7 @@ public class Utils {
     public static final String ANSI_CYAN = "\u001B[36m";
     public static final String ANSI_WHITE = "\u001B[37m";
 
-    public static boolean sendMessage(Socket connection, String message) {
+    public static boolean sendMessage(Socket connection, String message) throws NullPointerException {
         try {
             DataOutputStream output = new DataOutputStream(connection.getOutputStream());
             output.flush();
@@ -43,12 +38,13 @@ public class Utils {
             output.flush();
             return true;
         } catch (IOException ex) {
-            Logger.getLogger(Utils.class.getName()).log(Level.SEVERE, null, ex);
+            System.err.println("Conexão Perdida com o Cliente");
+            return false;
         }
-        return false;
+
     }
 
-    public static String receiveMessage(Socket connection) {
+    public static String receiveMessage(Socket connection) throws NullPointerException{
 
         String response = null;
 
@@ -56,7 +52,7 @@ public class Utils {
             DataInputStream input = new DataInputStream(connection.getInputStream());
             response = input.readLine();
         } catch (IOException ex) {
-            Logger.getLogger(Utils.class.getName()).log(Level.SEVERE, null, ex);
+            System.err.println("Conexão Perdida com o Cliente");
 //        } catch (ClassNotFoundException ex) {
 //            Logger.getLogger(Utils.class.getName()).log(Level.SEVERE, null, ex);
         }
