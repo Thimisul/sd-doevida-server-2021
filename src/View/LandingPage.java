@@ -57,9 +57,9 @@ public class LandingPage extends javax.swing.JFrame {
         jLabel1 = new javax.swing.JLabel();
         jBEditarCadastro = new javax.swing.JButton();
         jBLogout = new javax.swing.JButton();
+        jBVerificaPendentes = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-        setTitle("Sistema de Doações");
 
         jPanel1.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
 
@@ -96,19 +96,28 @@ public class LandingPage extends javax.swing.JFrame {
             }
         });
 
+        jBVerificaPendentes.setText("Verificar pendentes");
+        jBVerificaPendentes.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jBVerificaPendentesActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-            .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jBEditarCadastro)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(jBLogout)
                 .addContainerGap())
+            .addGroup(layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jBEditarCadastro)
+                    .addComponent(jBVerificaPendentes))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -116,7 +125,9 @@ public class LandingPage extends javax.swing.JFrame {
                 .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jBEditarCadastro)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 194, Short.MAX_VALUE)
+                .addGap(18, 18, 18)
+                .addComponent(jBVerificaPendentes)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 153, Short.MAX_VALUE)
                 .addComponent(jBLogout)
                 .addContainerGap())
         );
@@ -131,13 +142,13 @@ public class LandingPage extends javax.swing.JFrame {
             JSONObject editarMessage = new JSONObject();
             editar.put("protocol", 710);
             editar.put("message", editarMessage);
-            editarMessage.put("username",Login.usernameglobal);
+            editarMessage.put("username", Login.usernameglobal);
             //System.out.println("Da landing page do protocolo 710" + Login.usernameglobal);
             Utils.sendMessage(connection, editar.toString());
             String messageJson = Utils.receiveMessage(connection);
             JSONObject jsonO = new JSONObject(messageJson);
             JSONObject messageO = new JSONObject(jsonO.optString("message"));
-            Integer protocol = (Integer) jsonO.opt("protocol"); 
+            Integer protocol = (Integer) jsonO.opt("protocol");
             System.out.println("mensagem de resposta --->>>" + messageJson);
 //            User userEdit = new User(
 //                                    null, 
@@ -154,26 +165,14 @@ public class LandingPage extends javax.swing.JFrame {
             userEdit.setCity(messageO.optString("city"));
             userEdit.setFederativeUnit(messageO.optString("state"));
             userEdit.setRecepValidated(messageO.optInt("receptor"));
-            
+
             new EditRecordUser(connection, userEdit);//que quer abrir
             System.out.println("veio da landing page no final de tudo " + userEdit.getName());
-            
+
         } catch (JSONException ex) {
             Logger.getLogger(LandingPage.class.getName()).log(Level.SEVERE, null, ex);
             JOptionPane.showMessageDialog(rootPane, "Mensagem" + ex, "Erro", JOptionPane.ERROR_MESSAGE);
         }
-
-        //Mandar o json solicitando os dados
-        //Abrir a tela e colocar nos campos
-        //Mandar novamente pela tela de Editrecorder
-        //Esperar a mensagem
-        //Fechar a tela
-
-        //Mandar o json solicitando os dados
-        //Abrir a tela e colocar nos campos
-        //Mandar novamente pela tela de Editrecorder
-        //Esperar a mensagem
-        //Fechar a tela
     }//GEN-LAST:event_jBEditarCadastroActionPerformed
 
     private void jBLogoutActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jBLogoutActionPerformed
@@ -190,6 +189,26 @@ public class LandingPage extends javax.swing.JFrame {
             JOptionPane.showMessageDialog(rootPane, "Mensagem " + ex, "Erro ao deslogar", JOptionPane.ERROR_MESSAGE);
         }
     }//GEN-LAST:event_jBLogoutActionPerformed
+
+    private void jBVerificaPendentesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jBVerificaPendentesActionPerformed
+        new AuthorizePending(connection);
+
+        JSONObject verificaPendentes = new JSONObject();
+        verificaPendentes.put("protocol", 600);
+        Utils.sendMessage(connection, verificaPendentes.toString());
+        String messageJson = Utils.receiveMessage(connection);
+        JSONObject jsonO = new JSONObject(messageJson);
+        JSONObject messageO = new JSONObject(jsonO.optString("message"));
+        System.out.println("mensagem de resposta --->>>" + messageJson);
+
+        Integer protocol = (Integer) jsonO.opt("protocol");
+        userEdit.setName(messageO.optString("name"));
+        userEdit.setCity(messageO.optString("city"));
+        userEdit.setFederativeUnit(messageO.optString("state"));
+        userEdit.setRecepValidated(messageO.optInt("receptor"));
+
+
+    }//GEN-LAST:event_jBVerificaPendentesActionPerformed
 
     /**
      * @param args the command line arguments
@@ -230,6 +249,7 @@ public class LandingPage extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jBEditarCadastro;
     private javax.swing.JButton jBLogout;
+    private javax.swing.JButton jBVerificaPendentes;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JPanel jPanel1;
     // End of variables declaration//GEN-END:variables
