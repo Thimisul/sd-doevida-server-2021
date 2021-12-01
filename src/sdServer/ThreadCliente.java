@@ -288,7 +288,12 @@ public class ThreadCliente extends Thread {
                     System.out.println(Utils.ANSI_GREEN + connection_info + Utils.ANSI_CYAN + " #100    DELETE ----> " + Utils.ANSI_RESET);
                     jsonMessageO = (JSONObject) jsonO.opt("message");
                     try {
-                        findUser = userDao.getUserByUsername(jsonMessageO.optString("username"));
+                        if (jsonMessageO.optString("username").equals("")) {
+                            System.out.println("username não enviado");
+                            findUser = userDao.getUserByUsername(connectedUSer.getUsername());
+                        } else {
+                            findUser = userDao.getUserByUsername(jsonMessageO.optString("username"));
+                        }
                         userDao.remove(findUser.getId());
                         response.put("protocol", 901);
                         responseMessage.put("result", true);
