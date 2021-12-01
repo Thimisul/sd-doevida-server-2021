@@ -23,6 +23,7 @@ public class ServerConnect extends JFrame {
     public ServerConnect() {
         super("DoeVida");
         initComponents();
+        this.setLocationRelativeTo(null);
         start();
     }
 

@@ -35,6 +35,7 @@ public class ChatReceptor extends javax.swing.JFrame implements Runnable {
         super("Chat com " + receptor);
         this.server = server;
         this.receptor = receptor;
+        this.setLocationRelativeTo(null);
         initComponents();
         message_list = new ArrayList<String>();
         newStart();
@@ -43,6 +44,7 @@ public class ChatReceptor extends javax.swing.JFrame implements Runnable {
         ChatReceptor(Socket server) {
         this.server = server;
         this.receptor = receptor;
+        this.setLocationRelativeTo(null);
         initComponents();
         message_list = new ArrayList<String>();
         newStart();

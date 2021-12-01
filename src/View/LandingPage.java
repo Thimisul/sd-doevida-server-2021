@@ -33,6 +33,7 @@ public class LandingPage extends javax.swing.JFrame {
     public LandingPage(Socket connection) {
         this.connection = connection;
         initComponents();
+        this.setLocationRelativeTo(null);
         start();
     }
 
@@ -58,6 +59,13 @@ public class LandingPage extends javax.swing.JFrame {
         jBVerificaPendentes = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        addWindowFocusListener(new java.awt.event.WindowFocusListener() {
+            public void windowGainedFocus(java.awt.event.WindowEvent evt) {
+            }
+            public void windowLostFocus(java.awt.event.WindowEvent evt) {
+                formWindowLostFocus(evt);
+            }
+        });
 
         jPanel1.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
 
@@ -164,7 +172,7 @@ public class LandingPage extends javax.swing.JFrame {
             userEdit.setFederativeUnit(messageO.optString("state"));
             userEdit.setRecepValidated(messageO.optInt("receptor"));
 
-            new EditRecordUser(connection, userEdit);//que quer abrir
+            new EditRecordUser(connection, userEdit, this);//que quer abrir
             System.out.println("veio da landing page no final de tudo " + userEdit.getName());
 
         } catch (JSONException ex) {
@@ -203,6 +211,10 @@ public class LandingPage extends javax.swing.JFrame {
             AuthorizePending authorizePending = new AuthorizePending(connection);
         }
     }//GEN-LAST:event_jBVerificaPendentesActionPerformed
+
+    private void formWindowLostFocus(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowLostFocus
+    
+    }//GEN-LAST:event_formWindowLostFocus
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

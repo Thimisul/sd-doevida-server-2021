@@ -35,6 +35,7 @@ public class AuthorizePending extends javax.swing.JFrame {
         this.connection = connection;
         CarregaTabela();
         initComponents();
+        this.setLocationRelativeTo(null);
         start();
     }
 

@@ -20,6 +20,7 @@ public class ReceptorsList extends javax.swing.JFrame {
      public ReceptorsList(Socket server) { 
         this.server = server;
         initComponents();
+        this.setLocationRelativeTo(null);
         start();
     }
 

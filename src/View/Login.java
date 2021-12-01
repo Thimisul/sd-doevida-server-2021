@@ -27,6 +27,7 @@ public class Login extends javax.swing.JFrame {
     public Login(Socket connection) {
         this.connection = connection;
         initComponents();
+        this.setLocationRelativeTo(null);
         start();
     }
 

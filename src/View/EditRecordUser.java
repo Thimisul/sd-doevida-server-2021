@@ -12,6 +12,7 @@ import java.util.logging.Logger;
 import javax.swing.JOptionPane;
 import entidades.User;
 import java.util.Arrays;
+import javax.swing.JFrame;
 import org.json.JSONException;
 import org.json.JSONObject;
 import utils.Utils;
@@ -25,6 +26,7 @@ public class EditRecordUser extends javax.swing.JFrame {
     User userEdit;
     Socket connection;
     ObjectOutputStream saida;
+    JFrame LandingPage;
 
     /**
      * Creates new form EditRecordUser
@@ -32,11 +34,13 @@ public class EditRecordUser extends javax.swing.JFrame {
      * @param connection
      * @param userEdit
      */
-    public EditRecordUser(Socket connection, User userEdit) {
+    public EditRecordUser(Socket connection, User userEdit, JFrame LandingPage) {
         this.connection = connection;
         this.userEdit = userEdit;
+        this.LandingPage = LandingPage;
         System.out.println("veio no editRecord " + this.userEdit.getName());
         initComponents();
+        this.setLocationRelativeTo(null);
         start();
 
     }
@@ -299,7 +303,7 @@ public class EditRecordUser extends javax.swing.JFrame {
         if (jPFSenha.getText().equals(jPFRepitaSenha.getText())) {
             try {
                 excluirUser.put("protocol", 900);
-                excluirUserMessage.put("username", jTFNome.getText());;
+                excluirUserMessage.put("username", Login.usernameglobal);;
                 excluirUser.put("message", excluirUserMessage);
                 Utils.sendMessage(connection, excluirUser.toString());
                 String messageJson = Utils.receiveMessage(connection);
@@ -308,7 +312,8 @@ public class EditRecordUser extends javax.swing.JFrame {
                 if (jsonO.optInt("protocol") == 901) {
                     JOptionPane.showMessageDialog(rootPane, "Usuário excluido com sucesso!");
                     dispose();
-                    //LandingPage landingpage = new LandingPage(connection);
+                    LandingPage.dispose();
+                    new Login(connection);
                 }
             } catch (JSONException ex) {
                 Logger.getLogger(EditRecordUser.class.getName()).log(Level.SEVERE, null, ex);

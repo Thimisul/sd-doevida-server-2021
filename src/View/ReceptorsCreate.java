@@ -27,6 +27,7 @@ public class ReceptorsCreate extends javax.swing.JFrame {
     ReceptorsCreate(Socket server) {
         this.connection = server;
         initComponents();
+        this.setLocationRelativeTo(null);
         start();
     }
 

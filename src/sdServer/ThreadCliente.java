@@ -304,7 +304,9 @@ public class ThreadCliente extends Thread {
                         Logger.getLogger(ThreadCliente.class.getName()).log(Level.SEVERE, null, ex);
                     }
 
-                    System.out.println(Utils.ANSI_GREEN + connection_info + Utils.ANSI_RESET + "Deletado");
+                    System.out.println(Utils.ANSI_GREEN + connection_info + Utils.ANSI_RED + " Deletado" + Utils.ANSI_RESET );
+                    System.out.print(Utils.ANSI_YELLOW + "SERVIDOR enviou - >>> " + Utils.ANSI_RESET);
+                    utils.Utils.sendMessage(connection, response.toString());
                     connectedUSer = new User();
                     connection_info = connection.getInetAddress().getHostName();
                     break;

@@ -37,6 +37,7 @@ public class Chat extends javax.swing.JFrame implements Runnable {
         this.server = server;
         this.receptor = receptor;
         initComponents();
+        this.setLocationRelativeTo(null);
         message_list = new ArrayList<String>();
         newStart();
     }
@@ -45,6 +46,7 @@ public class Chat extends javax.swing.JFrame implements Runnable {
         this.server = server;
         this.receptor = receptor;
         initComponents();
+        this.setLocationRelativeTo(null);
         message_list = new ArrayList<String>();
         newStart();
     }
