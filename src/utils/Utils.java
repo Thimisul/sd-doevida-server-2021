@@ -17,6 +17,7 @@ import java.net.Socket;
 public class Utils {
 
     public static String federativeUnit[] = {"AC", "AL", "AP", "AM", "BA", "CE", "DF", "ES", "GO", "MA", "MT", "MS", "MG", "PA", "PB", "PR", "PE", "PI", "RJ", "RN", "RS", "RO", "RR", "SC", "SP", "SE", "TO"};
+    public static String filtroReceptores[] = {"username", "Nome", "Cidade", "Estado"};
 
     public static final String ANSI_RESET = "\u001B[0m";
     public static final String ANSI_BLACK = "\u001B[30m";
