@@ -20,7 +20,7 @@ import utils.Utils;
  */
 public class SDServer {
     
-    private static final int PORT = 24801;
+    private static final int PORT = 20025;
 
     private ServerSocket server;
     private Map<String, ThreadCliente> clients;

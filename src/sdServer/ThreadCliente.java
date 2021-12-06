@@ -21,6 +21,7 @@ import java.util.logging.Logger;
 import javax.persistence.NoResultException;
 import jpaControles.exceptions.IllegalOrphanException;
 import jpaControles.exceptions.NonexistentEntityException;
+import org.json.JSONArray;
 import org.json.JSONObject;
 import utils.Utils;
 
@@ -109,8 +110,8 @@ public class ThreadCliente extends Thread {
                             connection_info = connection_info.concat(" -- " + connectedUSer.getUsername());
                             System.out.println(Utils.ANSI_GREEN + connection_info + " Logado " + Utils.ANSI_RESET);
                             responseMessage.put("result", true);
+                            responseMessage.put("usertype", connectedUSer.getUserType());
                             response.put("protocol", 101);
-                            response.put("usertype", connectedUSer.getUserType());
                             response.put("message", responseMessage);
                         } catch (NoResultException e) {
                             System.err.println(Utils.ANSI_GREEN + connection_info + Utils.ANSI_RESET + " Username ou password incorretos ");
@@ -152,7 +153,18 @@ public class ThreadCliente extends Thread {
 
                         if (!usersList.isEmpty()) {
                             responseMessage.put("result", true);
-                            responseMessage.put("list", usersList);
+                            JSONArray responseList = new JSONArray();
+                            for(int i = 0;i < usersList.size(); i++){
+                                JSONObject userO = new JSONObject();
+                                userO.put("username", usersList.get(i).getUsername());
+                                userO.put("receptor", usersList.get(i).getRecepValidated());
+                                userO.put("city", usersList.get(i).getCity());
+                                userO.put("state", usersList.get(i).getFederativeUnit());
+                                userO.put("id", usersList.get(i).getId());
+                                userO.put("name", usersList.get(i).getName());
+                                responseList.put(userO);
+                            }
+                            responseMessage.put("list", responseList);
                             response.put("protocol", 401);
                             response.put("message", responseMessage);
                         } else {
@@ -160,7 +172,6 @@ public class ThreadCliente extends Thread {
                             responseMessage.put("reason", "Nenhum Receptor Listado");
                             response.put("protocol", 402);
                             response.put("message", responseMessage);
-                            System.out.println("400 nao encontrado");
                         }
 
                         System.out.print(Utils.ANSI_YELLOW + "SERVIDOR enviou - >>> " + Utils.ANSI_RESET);
