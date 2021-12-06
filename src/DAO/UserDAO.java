@@ -87,4 +87,8 @@ public class UserDAO {
         User userFindEdit = objetoJPA.getUserByUsernameEdit(username);
         return userFindEdit;
     }
+    
+    public List<User> getReceptors(String username, String name, String city, String state){
+        return objetoJPA.userFindReceptors(username, name, city, state);
+    }
 }

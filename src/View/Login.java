@@ -167,9 +167,16 @@ public class Login extends javax.swing.JFrame {
                     System.out.println("Login ok");
                             
                 //testar protocolos apos login--------------------------------------------
-                //JSONObject teste = new JSONObject();
-                //teste.put("protocol", 600);
-                //Utils.sendMessage(connection, teste.toString());
+//                JSONObject teste = new JSONObject();
+//                JSONObject testeMsg = new JSONObject();
+//                JSONObject testefilter = new JSONObject();
+//                //testefilter.put("username", "thimisul");
+//                testeMsg.put("donor", "user");
+//                testeMsg.put("receptor", "thimisul");
+//                testeMsg.put("value", 100);
+//                teste.put("protocol", 510);
+//                teste.put("message", testeMsg);
+//                Utils.sendMessage(connection, teste.toString());
                 //----------------------------------------------------------------------
                 
                     new LandingPage(connection);

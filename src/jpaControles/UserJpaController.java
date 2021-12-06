@@ -277,7 +277,7 @@ public class UserJpaController implements Serializable {
     }
 
     public void receptorAcept(String username, int receptValidated) throws IllegalOrphanException, NonexistentEntityException, Exception {
-        EntityManager em = null;       
+        EntityManager em = null;
         try {
             em = getEntityManager();
             User user = getUserByUsernameEdit(username);
@@ -290,6 +290,26 @@ public class UserJpaController implements Serializable {
             if (em != null) {
                 em.close();
             }
+        }
+    }
+
+    public List<User> userFindReceptors(String username, String name, String city, String state) {
+        EntityManager em = getEntityManager();
+        try {
+            Query q = em.createNamedQuery("User.findReceptors");
+            q.setParameter("name","%"+name+"%");
+            q.setParameter("username", "%"+username+"%");
+            q.setParameter("city", "%"+city+"%");
+            q.setParameter("federativeUnit", "%"+state+"%");
+            return q.getResultList();
+        } catch (NoResultException ex) {
+            System.out.println("Não encontrado resultados de receptores");
+            return null;
+        } catch (ArrayIndexOutOfBoundsException ex){
+            System.out.println("Não encontrado resultados de receptores");
+            return null;
+        }finally {
+            em.close();
         }
     }
 }
