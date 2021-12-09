@@ -8,6 +8,7 @@ package View;
 import java.net.Socket;
 import java.util.Arrays;
 import java.util.Vector;
+import javafx.scene.control.ComboBox;
 import javax.swing.JOptionPane;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -41,6 +42,7 @@ public class ReceptorsList1 extends javax.swing.JFrame {
     public void start() {
         this.pack();
         this.setVisible(true);
+        String TipoFiltro = jComboTipoFiltro.getSelectedItem().toString();
     }
 
     /**
@@ -85,6 +87,11 @@ public class ReceptorsList1 extends javax.swing.JFrame {
                 jComboTipoFiltroActionPerformed(evt);
             }
         });
+        jComboTipoFiltro.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jComboTipoFiltroActionPerformed(evt);
+            }
+        });
 
         jBPesquisar.setText("Pesquisar");
         jBPesquisar.addActionListener(new java.awt.event.ActionListener() {
@@ -119,11 +126,10 @@ public class ReceptorsList1 extends javax.swing.JFrame {
         jPDonorLayout.setVerticalGroup(
             jPDonorLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPDonorLayout.createSequentialGroup()
-                .addGroup(jPDonorLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jLabel1)
-                    .addGroup(jPDonorLayout.createSequentialGroup()
-                        .addContainerGap()
-                        .addComponent(jComboTipoFiltro, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap()
+                .addGroup(jPDonorLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jComboTipoFiltro, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel1))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(jTFFiltroWhere, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -263,8 +269,13 @@ public class ReceptorsList1 extends javax.swing.JFrame {
             columnNames.add("Nome");//2
             columnNames.add("Cidade");
             columnNames.add("Estado");
+        }
     }//GEN-LAST:event_jBPesquisarActionPerformed
 
+    private void jComboTipoFiltroActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jComboTipoFiltroActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jComboTipoFiltroActionPerformed
+   
     /**
      * @param args the command line arguments
      *
