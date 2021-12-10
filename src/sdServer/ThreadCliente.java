@@ -33,10 +33,11 @@ public class ThreadCliente extends Thread {
 
     private String connection_info;
     private Socket connection;
-    private SDServer server;
+    private SDServerInterface server;
     private boolean running;
 
-    public ThreadCliente(String connection_info, Socket connection, SDServer server) {
+
+    public ThreadCliente(String connection_info, Socket connection, SDServerInterface server) {
         this.connection_info = connection_info;
         this.connection = connection;
         this.server = server;
