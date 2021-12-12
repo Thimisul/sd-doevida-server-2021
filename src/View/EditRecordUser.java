@@ -256,6 +256,9 @@ public class EditRecordUser extends javax.swing.JFrame {
                 editarUserMessage.put("city", jTFCidade.getText());
                 editarUserMessage.put("state", Utils.federativeUnit[jComboEstado.getSelectedIndex()]);
                 editarUserMessage.put("password", jPFSenha.getText());
+                if (jCBpendingDonation.isSelected()){
+                    editarUserMessage.put("receptor",0);
+                }
                 editarUser.put("message", editarUserMessage);
                 Utils.sendMessage(connection, editarUser.toString());
                 String messageJson = Utils.receiveMessage(connection);

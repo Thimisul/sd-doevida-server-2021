@@ -43,6 +43,7 @@ public class ReceptorsList1 extends javax.swing.JFrame {
         this.pack();
         this.setVisible(true);
         String TipoFiltro = jComboTipoFiltro.getSelectedItem().toString();
+        jTFFiltroWhere.enable(false);
     }
 
     /**
@@ -174,7 +175,8 @@ public class ReceptorsList1 extends javax.swing.JFrame {
 
         if (jComboTipoFiltro.getSelectedItem() == "") {
             JOptionPane.showMessageDialog(rootPane, "Selecionar ao menos um tipo de filtro no combobox");
-        } else if ((!"".equals(jComboTipoFiltro.getSelectedItem())) && ("".equals(jTFFiltroWhere.getText()))) {
+        } else if (jComboTipoFiltro.getSelectedItem() == "Todos") {
+            jTFFiltroWhere.enable(false);
             String filtroTabela = String.valueOf(jComboTipoFiltro.getSelectedItem());
             System.out.println("Texto do combobox: " + filtroTabela);
 
@@ -199,30 +201,8 @@ public class ReceptorsList1 extends javax.swing.JFrame {
             System.out.println("mensagem de resposta messageO --->>>" + messageO.toString());
             JSONArray listO = new JSONArray(messageO.optString("list"));
             System.out.println("mensagem de resposta listO --->>>" + listO.toString());
-
-            //logica de popular tabela
-            dataList = new Vector<>();
-
-            for (int i = 0; i < listO.length(); i++) {
-
-                JSONObject jsonObj = listO.getJSONObject(i);
-                data = new Vector<>();
-
-                data.add(jsonObj.getString("username"));
-                data.add(jsonObj.getString("name"));
-                data.add(jsonObj.getString("city"));
-                data.add(jsonObj.getString("state"));
-
-                dataList.add(data);
-            }
-
-            columnNames = new Vector<>();
-            columnNames.add("Username");//1
-            columnNames.add("Nome");//2
-            columnNames.add("Cidade");
-            columnNames.add("Estado");
-
-        } else {
+        } else if ((jComboTipoFiltro.getSelectedItem() != "Todos") && (jComboTipoFiltro.getSelectedItem() == "")) {
+            jTFFiltroWhere.enable(true);
             String filtroTabela = String.valueOf(jComboTipoFiltro.getSelectedItem());
             System.out.println("Texto do combobox: " + filtroTabela);
 
@@ -232,7 +212,7 @@ public class ReceptorsList1 extends javax.swing.JFrame {
             verificaReceptores.put("protocol", 400);
             verificaReceptores.put("message", verificaReceptoresMessage);
             verificaReceptoresMessage.put("filter", verificaReceptoresMessageFilter);
-            verificaReceptoresMessageFilter.put(filtroTabela, whereTabela);
+            verificaReceptoresMessageFilter.put(filtroTabela, "*");
 
             System.out.println("400 " + verificaReceptores.toString());
             Utils.sendMessage(connection, verificaReceptores.toString());
@@ -247,7 +227,7 @@ public class ReceptorsList1 extends javax.swing.JFrame {
             System.out.println("mensagem de resposta messageO --->>>" + messageO.toString());
             JSONArray listO = new JSONArray(messageO.optString("list"));
             System.out.println("mensagem de resposta listO --->>>" + listO.toString());
-
+        }
             //logica de popular tabela
             dataList = new Vector<>();
 
@@ -269,13 +249,16 @@ public class ReceptorsList1 extends javax.swing.JFrame {
             columnNames.add("Nome");//2
             columnNames.add("Cidade");
             columnNames.add("Estado");
-        }
     }//GEN-LAST:event_jBPesquisarActionPerformed
 
     private void jComboTipoFiltroActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jComboTipoFiltroActionPerformed
-        // TODO add your handling code here:
+        if ((jComboTipoFiltro.getSelectedItem() == "") || (jComboTipoFiltro.getSelectedItem() == "Todos")) {
+            jTFFiltroWhere.enable(false);
+        } else {
+            jTFFiltroWhere.enable(true);
+        }
     }//GEN-LAST:event_jComboTipoFiltroActionPerformed
-   
+
     /**
      * @param args the command line arguments
      *

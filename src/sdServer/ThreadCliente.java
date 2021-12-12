@@ -9,6 +9,7 @@ import DAO.DonationDAO;
 import DAO.UserDAO;
 import entidades.Donation;
 import entidades.User;
+import java.net.ServerSocket;
 import java.net.Socket;
 import java.sql.Time;
 import java.time.Instant;
@@ -33,15 +34,19 @@ public class ThreadCliente extends Thread {
 
     private String connection_info;
     private Socket connection;
-    private SDServerInterface server;
+    private SDServerInterface serversd;
     private boolean running;
 
 
-    public ThreadCliente(String connection_info, Socket connection, SDServerInterface server) {
+    public ThreadCliente(String connection_info, Socket connection, SDServerInterface serversd) {
         this.connection_info = connection_info;
         this.connection = connection;
-        this.server = server;
+        this.serversd = serversd;
         this.running = false;
+    }
+
+    ThreadCliente(String connection_info, Socket connection, ServerSocket server) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
 //    public void run() {
@@ -161,7 +166,7 @@ public class ThreadCliente extends Thread {
                                 userO.put("receptor", usersList.get(i).getRecepValidated());
                                 userO.put("city", usersList.get(i).getCity());
                                 userO.put("state", usersList.get(i).getFederativeUnit());
-                                userO.put("id", usersList.get(i).getId());
+                                //userO.put("id", usersList.get(i).getId());
                                 userO.put("name", usersList.get(i).getName());
                                 responseList.put(userO);
                             }

@@ -70,7 +70,7 @@ public class AuthorizePending extends javax.swing.JFrame {
             JSONObject jsonObj = listO.getJSONObject(i);
             data = new Vector<>();
 
-            data.add(String.valueOf(jsonObj.getInt("id")));
+            //data.add(String.valueOf(jsonObj.getInt("id")));
             data.add(jsonObj.getString("name"));
             data.add(jsonObj.getString("username"));
             data.add(jsonObj.getString("city"));
@@ -80,11 +80,11 @@ public class AuthorizePending extends javax.swing.JFrame {
         }
 
         columnNames = new Vector<>();
-        columnNames.add("ID");//0
-        columnNames.add("Nome");//1
-        columnNames.add("Username");//2
-        columnNames.add("Cidade");
-        columnNames.add("Estado");
+        //columnNames.add("ID");//0
+        columnNames.add("Nome");//0
+        columnNames.add("Username");//1
+        columnNames.add("Cidade");//2
+        columnNames.add("Estado");//3
 
         //JTable table = new JTable(dataList, columnNames);
 //        List<String> usuariosS = new ArrayList<String>();
@@ -135,6 +135,14 @@ public class AuthorizePending extends javax.swing.JFrame {
 
         jPanel1.setBorder(javax.swing.BorderFactory.createTitledBorder("Lista de Recebedores pendentes de aprovação"));
 
+        jTListaPendentes.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+
+            },
+            new String [] {
+
+            }
+        ));
         jScrollPane1.setViewportView(jTListaPendentes);
 
         jLabel1.setText("Para aprovar ou reprovar, seleciona a linha acima correspondente ao usuário");
@@ -201,7 +209,7 @@ public class AuthorizePending extends javax.swing.JFrame {
 
     private void jBAceitarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jBAceitarActionPerformed
         String txtusername;
-        txtusername = (String) jTListaPendentes.getValueAt(jTListaPendentes.getSelectedRow(), 2);
+        txtusername = (String) jTListaPendentes.getValueAt(jTListaPendentes.getSelectedRow(), 1);
         System.out.println("O valor pego é: " + txtusername);
         JSONObject enviaPendente = new JSONObject();
         JSONObject enviaPendenteMessage = new JSONObject();
@@ -224,7 +232,7 @@ public class AuthorizePending extends javax.swing.JFrame {
 
     private void jBRecusarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jBRecusarActionPerformed
         String txtusername;
-        txtusername = (String) jTListaPendentes.getValueAt(jTListaPendentes.getSelectedRow(), 2);
+        txtusername = (String) jTListaPendentes.getValueAt(jTListaPendentes.getSelectedRow(), 1);
         System.out.println("O valor pego é: " + txtusername);
         JSONObject enviaPendente = new JSONObject();
         JSONObject enviaPendenteMessage = new JSONObject();

@@ -38,7 +38,7 @@ public class SDServer {
                 connection_info  = connection.getInetAddress().getHostName();
                 System.out.println(Utils.ANSI_GREEN + connection_info + " Conectado" + Utils.ANSI_RESET);
                 //connection_info = Utils.receiveMessage(connection);              
-                ThreadCliente cl = new ThreadCliente(connection_info, connection, this);
+                ThreadCliente cl = new ThreadCliente(connection_info, connection, server);
                 clients.put(connection_info, cl);
                 //Utils.sendMessage(connection, "Sucess");             
                 //System.out.println(clients.get(0));

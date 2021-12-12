@@ -13,6 +13,8 @@ import java.util.Map;
 import utils.Utils;
 import entidades.User;
 import java.util.ArrayList;
+import javax.swing.SwingUtilities;
+import javax.swing.table.DefaultTableModel;
 import org.json.JSONArray;
 
 /**
@@ -99,10 +101,22 @@ public class SDServerInterface extends javax.swing.JFrame {
 
         jLPort = new javax.swing.JLabel();
         jLabel1 = new javax.swing.JLabel();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        jTConectados = new javax.swing.JTable();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
         jLabel1.setText("Servidor ativo na porta:");
+
+        jTConectados.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+
+            },
+            new String [] {
+                "IP", "Porta"
+            }
+        ));
+        jScrollPane1.setViewportView(jTConectados);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -110,10 +124,15 @@ public class SDServerInterface extends javax.swing.JFrame {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jLabel1)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jLPort, javax.swing.GroupLayout.PREFERRED_SIZE, 61, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(208, Short.MAX_VALUE))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(10, 10, 10)
+                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 355, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(jLabel1)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jLPort, javax.swing.GroupLayout.PREFERRED_SIZE, 61, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap(25, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -122,7 +141,9 @@ public class SDServerInterface extends javax.swing.JFrame {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(jLPort, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addContainerGap(266, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 280, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         pack();
@@ -132,11 +153,34 @@ public class SDServerInterface extends javax.swing.JFrame {
      * @param args the command line arguments
      */
     public static void main(String args[]) {
-        SDServerInterface sdserverInterface = new SDServerInterface();
+                java.awt.EventQueue.invokeLater(new Runnable() {
+            public void run() {
+                SDServerInterface sdserverInterface = new SDServerInterface();
+            }
+        });
     }
 
+        synchronized private void listaUsuariosServer() {
+        SwingUtilities.invokeLater(new Runnable() {
+            @Override
+            public void run() {
+                DefaultTableModel model = (DefaultTableModel) jTConectados.getModel();
+                model.setRowCount(0);
+                try {
+                    clients.forEach((n) -> {
+                        model.addRow(new Object[]{n.getUsername(), n.getName()});
+                    });
+
+                } catch (Exception e) {
+                    error("Error: Listagem de usuários incorreta", e.getMessage());
+                }
+            }
+        });
+    }
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel jLPort;
     private javax.swing.JLabel jLabel1;
+    private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JTable jTConectados;
     // End of variables declaration//GEN-END:variables
 }

@@ -39,6 +39,7 @@ import org.json.JSONObject;
     @NamedQuery(name = "User.findByPassword", query = "SELECT u FROM User u WHERE u.password = :password"),
     @NamedQuery(name = "User.login", query = "SELECT u FROM User u WHERE u.username = :username and u.password = :password"),
     @NamedQuery(name = "User.findByPendents", query = "SELECT u FROM User u WHERE u.recepValidated = 0 "),
+    //@NamedQuery(name = "User.findByPendents", query = "SELECT u.name, u.username, u.city, u.federative_unit  FROM User u WHERE u.recepValidated = 0 "),
     @NamedQuery(name = "User.findReceptors", query = "SELECT u FROM User u WHERE u.recepValidated = 1 AND u.name like :name "
             + " AND u.username like :username AND u.city like :city AND u.federativeUnit like :federativeUnit ")})
 
