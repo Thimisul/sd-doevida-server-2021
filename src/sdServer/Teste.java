@@ -15,7 +15,7 @@ public class Teste {
      * @param args the command line arguments
      */
     public static void main(String[] args) {
-        SDServer n = new SDServer();
+        SDServerInterface n = new SDServerInterface();
     }
     
 }

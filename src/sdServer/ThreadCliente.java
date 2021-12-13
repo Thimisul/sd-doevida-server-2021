@@ -35,6 +35,7 @@ public class ThreadCliente extends Thread {
     private String connection_info;
     private Socket connection;
     private SDServerInterface serversd;
+    private SDServer server;
     private boolean running;
 
     public ThreadCliente(String connection_info, Socket connection, SDServerInterface serversd) {
@@ -44,8 +45,11 @@ public class ThreadCliente extends Thread {
         this.running = false;
     }
 
-    ThreadCliente(String connection_info, Socket connection, ServerSocket server) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public ThreadCliente(String connection_info, Socket connection, SDServer server) {
+        this.connection_info = connection_info;
+        this.connection = connection;
+        this.server = server;
+        this.running = false;
     }
 
 //    public void run() {
@@ -92,7 +96,6 @@ public class ThreadCliente extends Thread {
         User newUser;
         Donation donation;
         List<User> usersList;
-        List<Donation> donationList;
         JSONObject jsonMessageO;
         JSONObject response;
         JSONObject jsonO;
@@ -135,6 +138,7 @@ public class ThreadCliente extends Thread {
                         System.out.println(Utils.ANSI_GREEN + connection_info + Utils.ANSI_CYAN + " #100    LOGOUT ----> " + Utils.ANSI_RESET);
                         System.out.println(Utils.ANSI_GREEN + connection_info + Utils.ANSI_RESET + " fez Logout");
                         connectedUSer = new User();
+                        serversd.removeClient(connection_info, this);
                         connection_info = connection.getInetAddress().getHostName();
                         break;
 
@@ -226,8 +230,19 @@ public class ThreadCliente extends Thread {
                         System.out.println(Utils.ANSI_GREEN + connection_info + Utils.ANSI_CYAN + " #600    LISTAR PENDENTES ----> " + Utils.ANSI_RESET);
                         if (connectedUSer.getUserType() == 3) {
                             usersList = userDao.getPendentUsers();
+                            JSONArray responseList = new JSONArray();
+                            for (int i = 0; i < usersList.size(); i++) {
+                                JSONObject userO = new JSONObject();
+                                userO.put("username", usersList.get(i).getUsername());
+                                userO.put("receptor", usersList.get(i).getRecepValidated());
+                                userO.put("city", usersList.get(i).getCity());
+                                userO.put("state", usersList.get(i).getFederativeUnit());
+                                //userO.put("id", usersList.get(i).getId());
+                                userO.put("name", usersList.get(i).getName());
+                                responseList.put(userO);
+                            }
                             responseMessage.put("result", true);
-                            responseMessage.put("list", usersList);
+                            responseMessage.put("list", responseList);
                             response.put("protocol", 601);
                             response.put("message", responseMessage);
                             System.out.print(Utils.ANSI_YELLOW + "SERVIDOR enviou - >>> " + Utils.ANSI_RESET);
@@ -380,54 +395,6 @@ public class ThreadCliente extends Thread {
                         }
                         break;
 
-                    case 800:
-                        response = new JSONObject();
-                        responseMessage = new JSONObject();
-                        findUser = new User();
-                        donationDao = new DonationDAO();
-                        donationList = new ArrayList<Donation>();
-
-                        jsonMessageO = (JSONObject) jsonO.opt("message");
-                        try {
-                            if (jsonMessageO.optString("username").equals("")) {
-                                System.out.println("username não enviado");
-                                findUser = userDao.getUserByUsername(connectedUSer.getUsername());
-                            } else {
-                                System.out.println("Buscando o usuário no DB");
-                                findUser = userDao.getUserByUsername(jsonMessageO.optString("username"));
-                            }
-                            if (findUser.getUserType() == 3) {
-                                System.out.println("Administrador identificado");
-                                donationList = donationDao.geAllDonations();
-                            } else {
-                                System.out.println("Usuario identificado");
-                                donationList = donationDao.getByIdDonor(findUser.getId());
-                            }
-                            JSONArray donationListArr = new JSONArray();
-                            JSONObject donationListObj;
-                            for(Donation d : donationList){
-                                findUser = new User();
-                                findUser = userDao.getUserById(d.getIdRecipient());
-                                donationListObj = new JSONObject();
-                                donationListObj.put("donor",d.getIdDonor().getName());
-                                donationListObj.put("receptor",findUser.getUsername());
-                                donationListObj.put("value",d.getValue());
-                                donationListObj.put("anonymous",d.getIsAnon());
-                                donationListArr.put(donationListObj);
-                            }
-                             
-                            
-                            response.put("protocol", 801);
-                            responseMessage.put("result", true);
-                            responseMessage.put("list", donationListArr);
-                            response.put("message", responseMessage);
-                        } catch (Exception ex) {
-                            System.err.println("Erro: "+ex);
-                        }
-                        System.out.print(Utils.ANSI_YELLOW + "SERVIDOR enviou - >>> " + Utils.ANSI_RESET);
-                        utils.Utils.sendMessage(connection, response.toString());
-                        break;
-
                     case 900: //OK
                         response = new JSONObject();
                         responseMessage = new JSONObject();
@@ -446,14 +413,14 @@ public class ThreadCliente extends Thread {
                             responseMessage.put("result", true);
                             response.put("message", responseMessage);
                         } catch (NonexistentEntityException ex) {
-                            response.put("protocol", 902);
-                            responseMessage.put("result", false);
-                            responseMessage.put("reason", "Erro ao excluir usuário." + ex);
+                            response.put("protocol", 901);
+                            responseMessage.put("result", true);
+                            responseMessage.put("reason", ex);
                             response.put("message", responseMessage);
                         } catch (IllegalOrphanException ex) {
-                            response.put("protocol", 902);
-                            responseMessage.put("result", false);
-                            responseMessage.put("reason", "Erro ao excluir usuário." + ex);
+                            response.put("protocol", 901);
+                            responseMessage.put("result", true);
+                            responseMessage.put("reason", ex);
                             response.put("message", responseMessage);
                         }
 
@@ -483,8 +450,10 @@ public class ThreadCliente extends Thread {
 //                System.out.println(connection.getRemoteSocketAddress() + " Enviou: " + message);
 //            }  
             } catch (NullPointerException ex) {
-                System.out.println(ex.getCause().getMessage());
                 System.out.print(Utils.ANSI_RED + connection_info + Utils.ANSI_RESET);
+                connectedUSer = new User();
+                serversd.removeClient(connection_info, this);
+                connection_info = connection.getInetAddress().getHostName();
                 running = false;
             }
         }

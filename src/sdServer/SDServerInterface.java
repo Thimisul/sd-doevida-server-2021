@@ -10,9 +10,12 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Map.Entry;
 import utils.Utils;
 import entidades.User;
 import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.Set;
 import javax.swing.SwingUtilities;
 import javax.swing.table.DefaultTableModel;
 import org.json.JSONArray;
@@ -27,8 +30,8 @@ public class SDServerInterface extends javax.swing.JFrame {
 
     private ServerSocket server;
     private Map<String, ThreadCliente> clients;
-    public ArrayList<User> conectados = new ArrayList<User>();
-    public JSONArray list = new JSONArray();
+//    public ArrayList<User> conectados = new ArrayList<User>();
+//    public JSONArray list = new JSONArray();
 
     /**
      * Creates new form SDServerInterface
@@ -42,7 +45,17 @@ public class SDServerInterface extends javax.swing.JFrame {
     private void start() {
         this.pack();
         this.setVisible(true);
+        listaUsuariosServer();
         inicio();
+    }
+
+    private void Conectados() {
+//        Set< entry<String, ThreadCliente>> set = clients.entrySet();
+//        Iterator it = set.iterator();
+//        while (it.hasNext()) {
+//            Entry<String, ThreadCliente> entry = (Entry) it.next();
+//            System.out.println(entry.getKey() + "\t\t" + entry.getValue());
+//        }
     }
 
     private void inicio() {
@@ -56,7 +69,7 @@ public class SDServerInterface extends javax.swing.JFrame {
             //Aguarda conexões
             while (true) {
                 Socket connection = server.accept();
-                connection_info = connection.getInetAddress().getHostName();
+                connection_info = connection.getInetAddress().getHostName() + ":" + connection.getPort();
                 System.out.println(Utils.ANSI_GREEN + connection_info + " Conectado" + Utils.ANSI_RESET);
                 //connection_info = Utils.receiveMessage(connection);              
                 ThreadCliente cl = new ThreadCliente(connection_info, connection, this);
@@ -64,6 +77,7 @@ public class SDServerInterface extends javax.swing.JFrame {
                 //Utils.sendMessage(connection, "Sucess");             
                 //System.out.println(clients.get(0));
                 new Thread(cl).start();
+                listaUsuariosServer();
                 //Inicia thread do cliente
                 //new ThreadCliente(client).start();
 
@@ -75,6 +89,12 @@ public class SDServerInterface extends javax.swing.JFrame {
 
     public Map<String, ThreadCliente> getClients() {
         return clients;
+    }
+
+    public void removeClient(String connection_info, ThreadCliente tc) {
+        clients.remove(connection_info.split(" --")[0], tc);
+        listaUsuariosServer();
+        
     }
 
     private boolean checkLogin(String connection_info) {
@@ -149,33 +169,34 @@ public class SDServerInterface extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    /**
-     * @param args the command line arguments
-     */
-    public static void main(String args[]) {
-                java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                SDServerInterface sdserverInterface = new SDServerInterface();
-            }
-        });
-    }
-
-        synchronized private void listaUsuariosServer() {
+    private synchronized void listaUsuariosServer() {
         SwingUtilities.invokeLater(new Runnable() {
             @Override
             public void run() {
                 DefaultTableModel model = (DefaultTableModel) jTConectados.getModel();
                 model.setRowCount(0);
-                try {
-                    clients.forEach((n) -> {
-                        model.addRow(new Object[]{n.getUsername(), n.getName()});
-                    });
+                Set<Entry<String, ThreadCliente>> set = clients.entrySet();
+                Iterator it = set.iterator();
 
-                } catch (Exception e) {
-                    error("Error: Listagem de usuários incorreta", e.getMessage());
+                while (it.hasNext()) {
+                    Entry<String, ThreadCliente> entry = (Entry) it.next();
+                    System.out.println(entry.getKey() + "\t\t" + entry.getValue());
+                    model.addRow(new Object[]{entry.getKey().split(":")[0], entry.getKey().split(":")[1]});
                 }
+
+//                System.out.println(" lista usuarios server " + clients.get(1));
+//                DefaultTableModel model = (DefaultTableModel) jTConectados.getModel();
+//                model.setRowCount(0);
+//                    for (int i = 0; i < clients.size(); i++) {
+//                        model.addRow(new Object[]{clients.get(i).getName(), clients.get(i).getName()});
+//                        System.out.println(clients.get(i).getName() + " Conectado lista usuario");
+//                    }
+//                clients.forEach((n) -> {
+//                    model.addRow(new Object[]{n.getUsername(), n.getName()});
+//                });
             }
-        });
+        }
+        );
     }
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel jLPort;
