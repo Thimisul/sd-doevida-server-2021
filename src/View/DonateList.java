@@ -49,7 +49,7 @@ public class DonateList extends javax.swing.JFrame {
         JSONObject gerarRelatorio = new JSONObject();
         JSONObject gerarRelatorioMessage = new JSONObject();
         gerarRelatorioMessage.put("username", Login.usernameglobal);
-        gerarRelatorioMessage.put("usertype", 3); // TODO: Descobrir o usertype pelo Client ou fazer requisição
+        gerarRelatorioMessage.put("usertype", Login.userTypeGlobal);
         gerarRelatorio.put("protocol", 800);
         gerarRelatorio.put("message", gerarRelatorioMessage);
         System.out.println("800 " + gerarRelatorio.toString());

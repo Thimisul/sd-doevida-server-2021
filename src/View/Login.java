@@ -23,6 +23,7 @@ public class Login extends javax.swing.JFrame {
     Socket connection;
     ObjectOutputStream saida;
     static String usernameglobal;
+    static int userTypeGlobal;
 
     public Login(Socket connection) {
         this.connection = connection;
@@ -165,6 +166,7 @@ public class Login extends javax.swing.JFrame {
                 System.out.println(usernameglobal);
                 if (protocol == 101) {
                     System.out.println("Login ok");
+                    userTypeGlobal = (Integer) jsonO.getJSONObject("message").opt("usertype");
                             
                 //testar protocolos apos login--------------------------------------------
 //                JSONObject teste = new JSONObject();
