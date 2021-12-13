@@ -30,6 +30,7 @@ import javax.persistence.TemporalType;
 @NamedQueries({
     @NamedQuery(name = "Donation.findAll", query = "SELECT d FROM Donation d"),
     @NamedQuery(name = "Donation.findById", query = "SELECT d FROM Donation d WHERE d.id = :id"),
+    @NamedQuery(name = "Donation.findByIdDonor", query = "SELECT d FROM Donation d WHERE d.idDonor.id = :idDonor"),
     @NamedQuery(name = "Donation.findByIdRecipient", query = "SELECT d FROM Donation d WHERE d.idRecipient = :idRecipient"),
     @NamedQuery(name = "Donation.findByDateDonation", query = "SELECT d FROM Donation d WHERE d.dateDonation = :dateDonation"),
     @NamedQuery(name = "Donation.findByIsAnon", query = "SELECT d FROM Donation d WHERE d.isAnon = :isAnon"),

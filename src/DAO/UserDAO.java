@@ -91,4 +91,10 @@ public class UserDAO {
     public List<User> getReceptors(String username, String name, String city, String state){
         return objetoJPA.userFindReceptors(username, name, city, state);
     }
+    
+    public User getUserById(int id) {
+        User userFind = objetoJPA.findUser(id);
+        return userFind;
+    }
+    
 }

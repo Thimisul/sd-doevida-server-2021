@@ -10,6 +10,8 @@ import java.util.Arrays;
 import java.util.Vector;
 import javafx.scene.control.ComboBox;
 import javax.swing.JOptionPane;
+import javax.swing.SwingUtilities;
+import javax.swing.table.DefaultTableModel;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import utils.UserTableModel;
@@ -26,6 +28,7 @@ public class ReceptorsList1 extends javax.swing.JFrame {
     Vector<String> data;
     Vector<String> columnNames;
     Vector<Vector<String>> dataList;
+    JSONArray listO;
 
     /**
      * Creates new form ReceptorsList1
@@ -59,7 +62,7 @@ public class ReceptorsList1 extends javax.swing.JFrame {
         jLSelectReceptor = new javax.swing.JLabel();
         jBDoar = new javax.swing.JButton();
         jScrollPane1 = new javax.swing.JScrollPane();
-        jTListaReceptores = new javax.swing.JTable(dataList, columnNames);
+        jTListaReceptores = new javax.swing.JTable();
         jLabel1 = new javax.swing.JLabel();
         jComboTipoFiltro = new javax.swing.JComboBox<>();
         jTFFiltroWhere = new javax.swing.JTextField();
@@ -79,6 +82,14 @@ public class ReceptorsList1 extends javax.swing.JFrame {
             }
         });
 
+        jTListaReceptores.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+
+            },
+            new String [] {
+                "Username", "Nome", "Cidade", "Estado"
+            }
+        ));
         jScrollPane1.setViewportView(jTListaReceptores);
 
         jLabel1.setText("Selecione o filtro que deseja:");
@@ -260,30 +271,31 @@ public class ReceptorsList1 extends javax.swing.JFrame {
         System.out.println("mensagem de resposta protocolo --->>>" + protocol.toString());
         JSONObject messageO = new JSONObject(jsonO.optString("message"));
         System.out.println("mensagem de resposta messageO --->>>" + messageO.toString());
-        JSONArray listO = new JSONArray(messageO.optString("list"));
+        listO = new JSONArray(messageO.optString("list"));
         System.out.println("mensagem de resposta listO --->>>" + listO.toString());
         //logica de popular tabela
         if (protocol == 401) {
-            dataList = new Vector<>();
-
-            for (int i = 0; i < listO.length(); i++) {
-
-                JSONObject jsonObj = listO.getJSONObject(i);
-                data = new Vector<>();
-
-                data.add(jsonObj.getString("username"));
-                data.add(jsonObj.getString("name"));
-                data.add(jsonObj.getString("city"));
-                data.add(jsonObj.getString("state"));
-
-                dataList.add(data);
-            }
-
-            columnNames = new Vector<>();
-            columnNames.add("Username");//0
-            columnNames.add("Nome");//1
-            columnNames.add("Cidade");//2
-            columnNames.add("Estado");//3
+            listaUsuariosDoacao();
+//            dataList = new Vector<>();
+//
+//            for (int i = 0; i < listO.length(); i++) {
+//
+//                JSONObject jsonObj = listO.getJSONObject(i);
+//                data = new Vector<>();
+//
+//                data.add(jsonObj.getString("username"));
+//                data.add(jsonObj.getString("name"));
+//                data.add(jsonObj.getString("city"));
+//                data.add(jsonObj.getString("state"));
+//
+//                dataList.add(data);
+//            }
+//
+//            columnNames = new Vector<>();
+//            columnNames.add("Username");//0
+//            columnNames.add("Nome");//1
+//            columnNames.add("Cidade");//2
+//            columnNames.add("Estado");//3
         }
 
     }//GEN-LAST:event_jBPesquisarActionPerformed
@@ -296,19 +308,22 @@ public class ReceptorsList1 extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_jComboTipoFiltroActionPerformed
 
-//    private synchronized void listaUsuariosServer() {
-//        SwingUtilities.invokeLater(new Runnable() {
-//            @Override
-//            public void run() {
-//                DefaultTableModel model = (DefaultTableModel) jTConectados.getModel();
-//                model.setRowCount(0);
-//                for (int i = 0; i < clients.size(); i++) {
-//                    model.addRow(new Object[]{clients.get(i).getName(), clients.get(i).getName()});
-//                    System.out.println(clients.get(i).getName() + " Conectado lista usuario");
-//                }
-//            }
-//        }
-//    }
+    private synchronized void listaUsuariosDoacao() {
+        SwingUtilities.invokeLater(new Runnable() {
+            @Override
+            public void run() {
+                DefaultTableModel model = (DefaultTableModel) jTListaReceptores.getModel();
+                model.setRowCount(0);
+                for (int i = 0; i < listO.length(); i++) {
+                    JSONObject userO = new JSONObject(listO.get(i).toString());
+                    System.out.println(userO.opt("username"));
+                    model.addRow(new Object[]{userO.optString("username"), userO.optString("name"), userO.optString("city"), userO.optString("state")});
+                }
+
+            }
+        });
+    }
+
     /**
      * @param args the command line arguments
      *

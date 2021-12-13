@@ -126,7 +126,8 @@
           <SubComponents>
             <Component class="javax.swing.JTable" name="jTListaReceptores">
               <AuxValues>
-                <AuxValue name="JavaCodeGenerator_CreateCodeCustom" type="java.lang.String" value="new javax.swing.JTable(dataList, columnNames)"/>
+                <AuxValue name="JavaCodeGenerator_CreateCodeCustom" type="java.lang.String" value="new javax.swing.JTable()"/>
+                <AuxValue name="JavaCodeGenerator_InitCodePre" type="java.lang.String" value="jTListaReceptores.setModel(new javax.swing.table.DefaultTableModel(&#xa;    new Object [][] {&#xa;&#xa;    },&#xa;    new String [] {&#xa;        &quot;Username&quot;, &quot;Nome&quot;, &quot;Cidade&quot;, &quot;Estado&quot;&#xa;    }&#xa;));"/>
               </AuxValues>
             </Component>
           </SubComponents>
