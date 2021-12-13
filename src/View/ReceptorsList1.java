@@ -208,7 +208,7 @@ public class ReceptorsList1 extends javax.swing.JFrame {
 
             verificaReceptores.put("protocol", 400);
             verificaReceptores.put("message", verificaReceptoresMessage);
-            verificaReceptoresMessage.put("filter", "");
+            verificaReceptoresMessage.put("filter", verificaReceptoresMessageFilter);
             System.out.println("Primeiro elseif");
 
         } else if ((!"Todos".equals(jComboTipoFiltro.getSelectedItem().toString()))) {
