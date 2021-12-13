@@ -96,6 +96,7 @@ public class ThreadCliente extends Thread {
         User newUser;
         Donation donation;
         List<User> usersList;
+        List<Donation> donationList;
         JSONObject jsonMessageO;
         JSONObject response;
         JSONObject jsonO;
@@ -395,6 +396,53 @@ public class ThreadCliente extends Thread {
                         }
                         break;
 
+                    case 800:
+                        response = new JSONObject();
+                        responseMessage = new JSONObject();
+                        findUser = new User();
+                        donationDao = new DonationDAO();
+                        donationList = new ArrayList<Donation>();
+
+                        jsonMessageO = (JSONObject) jsonO.opt("message");
+                        try {
+                            if (jsonMessageO.optString("username").equals("")) {
+                                System.out.println("username não enviado");
+                                findUser = userDao.getUserByUsername(connectedUSer.getUsername());
+                            } else {
+                                System.out.println("Buscando o usuário no DB");
+                                findUser = userDao.getUserByUsername(jsonMessageO.optString("username"));
+                            }
+                            if (findUser.getUserType() == 3) {
+                                System.out.println("Administrador identificado");
+                                donationList = donationDao.geAllDonations();
+                            } else {
+                                System.out.println("Usuario identificado");
+                                donationList = donationDao.getByIdDonor(findUser.getId());
+                            }
+                            JSONArray donationListArr = new JSONArray();
+                            JSONObject donationListObj;
+                            for (Donation d : donationList) {
+                                findUser = new User();
+                                findUser = userDao.getUserById(d.getIdRecipient());
+                                donationListObj = new JSONObject();
+                                donationListObj.put("donor", d.getIdDonor().getName());
+                                donationListObj.put("receptor", findUser.getUsername());
+                                donationListObj.put("value", d.getValue());
+                                donationListObj.put("anonymous", d.getIsAnon());
+                                donationListArr.put(donationListObj);
+                            }
+
+                            response.put("protocol", 801);
+                            responseMessage.put("result", true);
+                            responseMessage.put("list", donationListArr);
+                            response.put("message", responseMessage);
+                        } catch (Exception ex) {
+                            System.err.println("Erro: " + ex);
+                        }
+                        System.out.print(Utils.ANSI_YELLOW + "SERVIDOR enviou - >>> " + Utils.ANSI_RESET);
+                        utils.Utils.sendMessage(connection, response.toString());
+                        break;
+
                     case 900: //OK
                         response = new JSONObject();
                         responseMessage = new JSONObject();
@@ -413,14 +461,14 @@ public class ThreadCliente extends Thread {
                             responseMessage.put("result", true);
                             response.put("message", responseMessage);
                         } catch (NonexistentEntityException ex) {
-                            response.put("protocol", 901);
-                            responseMessage.put("result", true);
-                            responseMessage.put("reason", ex);
+                            response.put("protocol", 902);
+                            responseMessage.put("result", false);
+                            responseMessage.put("reason", "Erro ao Deletar " + ex);
                             response.put("message", responseMessage);
                         } catch (IllegalOrphanException ex) {
-                            response.put("protocol", 901);
-                            responseMessage.put("result", true);
-                            responseMessage.put("reason", ex);
+                            response.put("protocol", 902);
+                            responseMessage.put("result", false);
+                            responseMessage.put("reason", "Erro ao Deletar " + ex);
                             response.put("message", responseMessage);
                         }
 
