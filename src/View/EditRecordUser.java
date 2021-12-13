@@ -53,6 +53,24 @@ public class EditRecordUser extends javax.swing.JFrame {
         int indexOfElement = Arrays.asList(Utils.federativeUnit).indexOf(userEdit.getFederativeUnit());
         jComboEstado.setSelectedIndex(indexOfElement);
         System.out.println("veio no editRecord metodo start " + this.userEdit.getName());
+        //System.out.println("valor receptor: " + userEdit.getRecepValidated());
+        switch (userEdit.getRecepValidated()) {
+            case 99:
+                jCBpendingDonation.setSelected(false);
+                jCBpendingDonation.setEnabled(true);
+                break;
+            case 0:
+                jCBpendingDonation.setSelected(true);
+                jCBpendingDonation.setEnabled(false);
+                break;
+            case 1:
+                jCBpendingDonation.setSelected(true);
+                jCBpendingDonation.setEnabled(true);
+                break;
+            default:
+                break;
+        }
+
     }
 
 //    public EditRecordUser(Socket connection) {
@@ -256,8 +274,10 @@ public class EditRecordUser extends javax.swing.JFrame {
                 editarUserMessage.put("city", jTFCidade.getText());
                 editarUserMessage.put("state", Utils.federativeUnit[jComboEstado.getSelectedIndex()]);
                 editarUserMessage.put("password", jPFSenha.getText());
-                if (jCBpendingDonation.isSelected()){
-                    editarUserMessage.put("receptor",0);
+                if (!jCBpendingDonation.isSelected()) {
+                    editarUserMessage.put("receptor", 99);
+                } else if (jCBpendingDonation.isSelected()) {
+                    editarUserMessage.put("receptor", 0);
                 }
                 editarUser.put("message", editarUserMessage);
                 Utils.sendMessage(connection, editarUser.toString());
