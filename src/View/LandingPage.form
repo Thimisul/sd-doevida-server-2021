@@ -37,6 +37,7 @@
               <Group type="103" groupAlignment="0" attributes="0">
                   <Component id="jBEditarCadastro" alignment="0" min="-2" max="-2" attributes="0"/>
                   <Component id="jBVerificaPendentes" alignment="0" min="-2" max="-2" attributes="0"/>
+                  <Component id="jBDoacao" alignment="0" min="-2" max="-2" attributes="0"/>
               </Group>
               <EmptySpace max="32767" attributes="0"/>
           </Group>
@@ -50,7 +51,9 @@
               <Component id="jBEditarCadastro" min="-2" max="-2" attributes="0"/>
               <EmptySpace type="separate" max="-2" attributes="0"/>
               <Component id="jBVerificaPendentes" min="-2" max="-2" attributes="0"/>
-              <EmptySpace pref="153" max="32767" attributes="0"/>
+              <EmptySpace type="separate" max="-2" attributes="0"/>
+              <Component id="jBDoacao" min="-2" max="-2" attributes="0"/>
+              <EmptySpace pref="112" max="32767" attributes="0"/>
               <Component id="jBLogout" min="-2" max="-2" attributes="0"/>
               <EmptySpace max="-2" attributes="0"/>
           </Group>
@@ -117,6 +120,14 @@
       </Properties>
       <Events>
         <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jBVerificaPendentesActionPerformed"/>
+      </Events>
+    </Component>
+    <Component class="javax.swing.JButton" name="jBDoacao">
+      <Properties>
+        <Property name="text" type="java.lang.String" value="Efetuar doa&#xe7;&#xe3;o"/>
+      </Properties>
+      <Events>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jBDoacaoActionPerformed"/>
       </Events>
     </Component>
   </SubComponents>

@@ -66,6 +66,7 @@ public class ReceptorsList1 extends javax.swing.JFrame {
         jBPesquisar = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+        setLocationByPlatform(true);
 
         jPDonor.setBorder(javax.swing.BorderFactory.createTitledBorder("Sou Doador"));
 
@@ -166,6 +167,12 @@ public class ReceptorsList1 extends javax.swing.JFrame {
 
     private void jBDoarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jBDoarActionPerformed
 
+        String txtusername;
+        txtusername = (String) jTListaReceptores.getValueAt(jTListaReceptores.getSelectedRow(), 0);
+        System.out.println("O valor pego é: " + txtusername);
+
+        new DonationView(connection, this, txtusername);
+
     }//GEN-LAST:event_jBDoarActionPerformed
 
     private void jBPesquisarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jBPesquisarActionPerformed
@@ -173,62 +180,90 @@ public class ReceptorsList1 extends javax.swing.JFrame {
         JSONObject verificaReceptoresMessage = new JSONObject();
         JSONObject verificaReceptoresMessageFilter = new JSONObject();
 
-        if (jComboTipoFiltro.getSelectedItem() == "") {
+        String filtroTabela = String.valueOf(jComboTipoFiltro.getSelectedItem().toString());
+        System.out.println("Texto do combobox: " + filtroTabela);
+
+        String whereTabela = jTFFiltroWhere.getText();
+        System.out.println("Texto do textfield: " + whereTabela);
+
+        System.out.println("case: " + filtroTabela);
+        if ("".equals(jComboTipoFiltro.getSelectedItem().toString())) {
             JOptionPane.showMessageDialog(rootPane, "Selecionar ao menos um tipo de filtro no combobox");
-        } else if (jComboTipoFiltro.getSelectedItem() == "Todos") {
+            System.out.println("Primeiro if");
+        } else if ("Todos".equals(jComboTipoFiltro.getSelectedItem().toString())) {
             jTFFiltroWhere.enable(false);
-            String filtroTabela = String.valueOf(jComboTipoFiltro.getSelectedItem());
+            //String filtroTabela = String.valueOf(jComboTipoFiltro.getSelectedItem().toString());
             System.out.println("Texto do combobox: " + filtroTabela);
-
-            String whereTabela = jTFFiltroWhere.getText();
-            System.out.println("Texto do textfield: " + whereTabela);
 
             verificaReceptores.put("protocol", 400);
             verificaReceptores.put("message", verificaReceptoresMessage);
-            verificaReceptoresMessage.put("filter", verificaReceptoresMessageFilter);
-            verificaReceptoresMessageFilter.put(filtroTabela, "*");
+            verificaReceptoresMessage.put("filter", "");
+            System.out.println("Primeiro elseif");
 
-            System.out.println("400 " + verificaReceptores.toString());
-            Utils.sendMessage(connection, verificaReceptores.toString());
-            System.out.println("Enviou a mensagem");
-            String messageJson = Utils.receiveMessage(connection);
-            System.out.println("Recebeu");
-            JSONObject jsonO = new JSONObject(messageJson);
-            System.out.println("mensagem de resposta jsonO --->>>" + jsonO.toString());
-            Integer protocol = (Integer) jsonO.opt("protocol");
-            System.out.println("mensagem de resposta protocolo --->>>" + protocol.toString());
-            JSONObject messageO = new JSONObject(jsonO.optString("message"));
-            System.out.println("mensagem de resposta messageO --->>>" + messageO.toString());
-            JSONArray listO = new JSONArray(messageO.optString("list"));
-            System.out.println("mensagem de resposta listO --->>>" + listO.toString());
-        } else if ((jComboTipoFiltro.getSelectedItem() != "Todos") && (jComboTipoFiltro.getSelectedItem() == "")) {
+        } else if ((!"Todos".equals(jComboTipoFiltro.getSelectedItem().toString()))) {
             jTFFiltroWhere.enable(true);
-            String filtroTabela = String.valueOf(jComboTipoFiltro.getSelectedItem());
+            //String filtroTabela = String.valueOf(jComboTipoFiltro.getSelectedItem().toString());
+            System.out.println("Segundo elseif");
             System.out.println("Texto do combobox: " + filtroTabela);
 
-            String whereTabela = jTFFiltroWhere.getText();
+            //String whereTabela = jTFFiltroWhere.getText();
             System.out.println("Texto do textfield: " + whereTabela);
 
-            verificaReceptores.put("protocol", 400);
-            verificaReceptores.put("message", verificaReceptoresMessage);
-            verificaReceptoresMessage.put("filter", verificaReceptoresMessageFilter);
-            verificaReceptoresMessageFilter.put(filtroTabela, "*");
+            System.out.println("case: " + filtroTabela);
+            switch (filtroTabela) {
+                //"username", "Nome", "Cidade", "Estado", "Todos"
+                case "username"://codigo;
+                    System.out.println("Entrei no case do username");
+                    verificaReceptores.put("protocol", 400);
+                    verificaReceptores.put("message", verificaReceptoresMessage);
+                    verificaReceptoresMessage.put("filter", verificaReceptoresMessageFilter);
+                    verificaReceptoresMessageFilter.put("username", whereTabela);
+                    break;
 
-            System.out.println("400 " + verificaReceptores.toString());
-            Utils.sendMessage(connection, verificaReceptores.toString());
-            System.out.println("Enviou a mensagem");
-            String messageJson = Utils.receiveMessage(connection);
-            System.out.println("Recebeu");
-            JSONObject jsonO = new JSONObject(messageJson);
-            System.out.println("mensagem de resposta jsonO --->>>" + jsonO.toString());
-            Integer protocol = (Integer) jsonO.opt("protocol");
-            System.out.println("mensagem de resposta protocolo --->>>" + protocol.toString());
-            JSONObject messageO = new JSONObject(jsonO.optString("message"));
-            System.out.println("mensagem de resposta messageO --->>>" + messageO.toString());
-            JSONArray listO = new JSONArray(messageO.optString("list"));
-            System.out.println("mensagem de resposta listO --->>>" + listO.toString());
+                case "Nome"://codigo;
+                    System.out.println("Entrei no case do Name");
+                    verificaReceptores.put("protocol", 400);
+                    verificaReceptores.put("message", verificaReceptoresMessage);
+                    verificaReceptoresMessage.put("filter", verificaReceptoresMessageFilter);
+                    verificaReceptoresMessageFilter.put("name", whereTabela);
+                    break;
+
+                case "Cidade"://codigo;
+                    System.out.println("Entrei no case da Cidade");
+                    verificaReceptores.put("protocol", 400);
+                    verificaReceptores.put("message", verificaReceptoresMessage);
+                    verificaReceptoresMessage.put("filter", verificaReceptoresMessageFilter);
+                    verificaReceptoresMessageFilter.put("city", whereTabela);
+                    break;
+
+                case "Estado"://codigo;
+                    System.out.println("Entrei no case do Estado");
+                    verificaReceptores.put("protocol", 400);
+                    verificaReceptores.put("message", verificaReceptoresMessage);
+                    verificaReceptoresMessage.put("filter", verificaReceptoresMessageFilter);
+                    verificaReceptoresMessageFilter.put("state", whereTabela);
+                    break;
+
+                default://codigo;
+                    System.out.println("Entrei no case do Default");
+            }
         }
-            //logica de popular tabela
+
+        System.out.println("400 " + verificaReceptores.toString());
+        Utils.sendMessage(connection, verificaReceptores.toString());
+        System.out.println("Enviou a mensagem");
+        String messageJson = Utils.receiveMessage(connection);
+        System.out.println("Recebeu");
+        JSONObject jsonO = new JSONObject(messageJson);
+        System.out.println("mensagem de resposta jsonO --->>>" + jsonO.toString());
+        Integer protocol = (Integer) jsonO.opt("protocol");
+        System.out.println("mensagem de resposta protocolo --->>>" + protocol.toString());
+        JSONObject messageO = new JSONObject(jsonO.optString("message"));
+        System.out.println("mensagem de resposta messageO --->>>" + messageO.toString());
+        JSONArray listO = new JSONArray(messageO.optString("list"));
+        System.out.println("mensagem de resposta listO --->>>" + listO.toString());
+        //logica de popular tabela
+        if (protocol == 401) {
             dataList = new Vector<>();
 
             for (int i = 0; i < listO.length(); i++) {
@@ -245,10 +280,12 @@ public class ReceptorsList1 extends javax.swing.JFrame {
             }
 
             columnNames = new Vector<>();
-            columnNames.add("Username");//1
-            columnNames.add("Nome");//2
-            columnNames.add("Cidade");
-            columnNames.add("Estado");
+            columnNames.add("Username");//0
+            columnNames.add("Nome");//1
+            columnNames.add("Cidade");//2
+            columnNames.add("Estado");//3
+        }
+
     }//GEN-LAST:event_jBPesquisarActionPerformed
 
     private void jComboTipoFiltroActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jComboTipoFiltroActionPerformed
@@ -259,6 +296,19 @@ public class ReceptorsList1 extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_jComboTipoFiltroActionPerformed
 
+//    private synchronized void listaUsuariosServer() {
+//        SwingUtilities.invokeLater(new Runnable() {
+//            @Override
+//            public void run() {
+//                DefaultTableModel model = (DefaultTableModel) jTConectados.getModel();
+//                model.setRowCount(0);
+//                for (int i = 0; i < clients.size(); i++) {
+//                    model.addRow(new Object[]{clients.get(i).getName(), clients.get(i).getName()});
+//                    System.out.println(clients.get(i).getName() + " Conectado lista usuario");
+//                }
+//            }
+//        }
+//    }
     /**
      * @param args the command line arguments
      *

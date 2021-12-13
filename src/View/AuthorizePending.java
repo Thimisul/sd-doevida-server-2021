@@ -135,14 +135,6 @@ public class AuthorizePending extends javax.swing.JFrame {
 
         jPanel1.setBorder(javax.swing.BorderFactory.createTitledBorder("Lista de Recebedores pendentes de aprovação"));
 
-        jTListaPendentes.setModel(new javax.swing.table.DefaultTableModel(
-            new Object [][] {
-
-            },
-            new String [] {
-
-            }
-        ));
         jScrollPane1.setViewportView(jTListaPendentes);
 
         jLabel1.setText("Para aprovar ou reprovar, seleciona a linha acima correspondente ao usuário");

@@ -57,6 +57,7 @@ public class LandingPage extends javax.swing.JFrame {
         jBEditarCadastro = new javax.swing.JButton();
         jBLogout = new javax.swing.JButton();
         jBVerificaPendentes = new javax.swing.JButton();
+        jBDoacao = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         addWindowFocusListener(new java.awt.event.WindowFocusListener() {
@@ -109,6 +110,13 @@ public class LandingPage extends javax.swing.JFrame {
             }
         });
 
+        jBDoacao.setText("Efetuar doação");
+        jBDoacao.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jBDoacaoActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -122,7 +130,8 @@ public class LandingPage extends javax.swing.JFrame {
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jBEditarCadastro)
-                    .addComponent(jBVerificaPendentes))
+                    .addComponent(jBVerificaPendentes)
+                    .addComponent(jBDoacao))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
@@ -133,7 +142,9 @@ public class LandingPage extends javax.swing.JFrame {
                 .addComponent(jBEditarCadastro)
                 .addGap(18, 18, 18)
                 .addComponent(jBVerificaPendentes)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 153, Short.MAX_VALUE)
+                .addGap(18, 18, 18)
+                .addComponent(jBDoacao)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 112, Short.MAX_VALUE)
                 .addComponent(jBLogout)
                 .addContainerGap())
         );
@@ -216,8 +227,13 @@ public class LandingPage extends javax.swing.JFrame {
     
     }//GEN-LAST:event_formWindowLostFocus
 
+    private void jBDoacaoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jBDoacaoActionPerformed
+        ReceptorsList1 rl = new ReceptorsList1(connection);
+    }//GEN-LAST:event_jBDoacaoActionPerformed
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton jBDoacao;
     private javax.swing.JButton jBEditarCadastro;
     private javax.swing.JButton jBLogout;
     private javax.swing.JButton jBVerificaPendentes;
