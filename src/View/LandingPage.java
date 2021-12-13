@@ -5,7 +5,6 @@
  */
 package View;
 
-
 import java.io.IOException;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
@@ -57,6 +56,7 @@ public class LandingPage extends javax.swing.JFrame {
         jBEditarCadastro = new javax.swing.JButton();
         jBLogout = new javax.swing.JButton();
         jBVerificaPendentes = new javax.swing.JButton();
+        jBGerarRelatorio = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         addWindowFocusListener(new java.awt.event.WindowFocusListener() {
@@ -109,6 +109,13 @@ public class LandingPage extends javax.swing.JFrame {
             }
         });
 
+        jBGerarRelatorio.setText("Gerar relatório");
+        jBGerarRelatorio.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jBGerarRelatorioActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -122,7 +129,8 @@ public class LandingPage extends javax.swing.JFrame {
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jBEditarCadastro)
-                    .addComponent(jBVerificaPendentes))
+                    .addComponent(jBVerificaPendentes)
+                    .addComponent(jBGerarRelatorio))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
@@ -133,7 +141,9 @@ public class LandingPage extends javax.swing.JFrame {
                 .addComponent(jBEditarCadastro)
                 .addGap(18, 18, 18)
                 .addComponent(jBVerificaPendentes)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 153, Short.MAX_VALUE)
+                .addGap(27, 27, 27)
+                .addComponent(jBGerarRelatorio)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 103, Short.MAX_VALUE)
                 .addComponent(jBLogout)
                 .addContainerGap())
         );
@@ -213,12 +223,17 @@ public class LandingPage extends javax.swing.JFrame {
     }//GEN-LAST:event_jBVerificaPendentesActionPerformed
 
     private void formWindowLostFocus(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowLostFocus
-    
+
     }//GEN-LAST:event_formWindowLostFocus
+
+    private void jBGerarRelatorioActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jBGerarRelatorioActionPerformed
+        DonateList donateList = new DonateList(connection);
+    }//GEN-LAST:event_jBGerarRelatorioActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jBEditarCadastro;
+    private javax.swing.JButton jBGerarRelatorio;
     private javax.swing.JButton jBLogout;
     private javax.swing.JButton jBVerificaPendentes;
     private javax.swing.JLabel jLabel1;

@@ -164,5 +164,16 @@ public class DonationJpaController implements Serializable {
             em.close();
         }
     }
-    
+
+    public List<Donation> findByIdDonor(int idDonor) {
+        EntityManager em = getEntityManager();
+        try {
+            Query q = getEntityManager().createNamedQuery("Donation.findByIdDonor");
+            q.setParameter("idDonor", idDonor);
+            return q.getResultList();
+        } finally {
+            em.close();
+        }
+    }
+
 }

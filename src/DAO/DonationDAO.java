@@ -59,5 +59,9 @@ public class DonationDAO {
             em.close();
         }
     }
+    
+    public List<Donation> getByIdDonor(int idDonor){
+        return objetoJPA.findByIdDonor(idDonor);
+    }
 
 }
