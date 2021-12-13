@@ -74,7 +74,7 @@ public class AuthorizePending extends javax.swing.JFrame {
             data.add(jsonObj.getString("name"));
             data.add(jsonObj.getString("username"));
             data.add(jsonObj.getString("city"));
-            data.add(jsonObj.getString("federativeUnit"));
+            data.add(jsonObj.getString("state"));
 
             dataList.add(data);
         }
