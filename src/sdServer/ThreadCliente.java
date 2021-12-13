@@ -398,14 +398,14 @@ public class ThreadCliente extends Thread {
                             responseMessage.put("result", true);
                             response.put("message", responseMessage);
                         } catch (NonexistentEntityException ex) {
-                            response.put("protocol", 901);
-                            responseMessage.put("result", true);
-                            responseMessage.put("reason", ex);
+                            response.put("protocol", 902);
+                            responseMessage.put("result", false);
+                            responseMessage.put("reason", "Erro ao excluir usuário." + ex);
                             response.put("message", responseMessage);
                         } catch (IllegalOrphanException ex) {
-                            response.put("protocol", 901);
-                            responseMessage.put("result", true);
-                            responseMessage.put("reason", ex);
+                            response.put("protocol", 902);
+                            responseMessage.put("result", false);
+                            responseMessage.put("reason", "Erro ao excluir usuário." + ex);
                             response.put("message", responseMessage);
                         }
 
